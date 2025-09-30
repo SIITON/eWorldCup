@@ -1,0 +1,2 @@
+# eWorldCup
+En spelturneringsarrangerare
