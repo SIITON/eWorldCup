@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Models\API\" />
     <Folder Include="Models\Tournaments\Base\" />
   </ItemGroup>
 

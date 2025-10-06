@@ -1,4 +1,6 @@
-﻿using eWorldCup.Core.Models;
+﻿using eWorldCup.Application.Features.MatchesInASpecificRound;
+using eWorldCup.Core.Models;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,13 +8,19 @@ namespace eWorldCup.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class TournamentController : ControllerBase
+public class TournamentController(ISender sender) : ControllerBase
 {
-    //[HttpPost("rounds/{roundNumber}")]
-    //public async Task<IActionResult> GetPairsInRound(int roundNumber, [FromBody] IEnumerable<Player> players)
-    //{
-        
-    //}
+    [HttpPost("rounds/{roundNumber}")]
+    public async Task<IActionResult> GetPairsInRound(int roundNumber, [FromBody] IEnumerable<Player> players)
+    {
+        var request = new GetMatchesInASpecificRoundRequest()
+        {
+            Players = players,
+            RoundNumber = roundNumber
+        };
+        var result = await sender.Send(request);
+        return Ok(result);
+    }
 }
 
 /*

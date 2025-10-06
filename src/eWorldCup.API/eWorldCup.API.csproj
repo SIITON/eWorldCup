@@ -12,7 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\eWorldCup.Application\eWorldCup.Application.csproj" />
     <ProjectReference Include="..\eWorldCup.Core\eWorldCup.Core.csproj" />
+    <ProjectReference Include="..\eWorldCup.Infrastructure\eWorldCup.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
