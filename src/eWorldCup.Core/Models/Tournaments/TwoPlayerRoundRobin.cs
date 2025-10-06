@@ -46,10 +46,25 @@ public class TwoPlayerRoundRobin : TournamentSchedule
                 Players = [a, b]
             };
         }
+    }
 
-        yield break;
-
-
+    public Match GetMatch(long roundNumber, int playerId)
+    {
+        EnsureRoundInRange(roundNumber);
+        var rotations = (roundNumber - 1) % NumberOfRounds;
+        var playerIndex = _players.FindIndex(p => p.Id == playerId);
+        if (playerIndex == -1)
+        {
+            throw new ArgumentException("Player not found in the tournament.", nameof(playerId));
+        }
+        var rightPos = NumberOfPlayers - 1 - playerIndex;
+        var a1 = MapPos(playerIndex, rotations);
+        var a2 = MapPos(rightPos, rotations);
+        return new Match
+        {
+            RoundNumber = roundNumber,
+            Players = [_players[a1], _players[a2]]
+        };
     }
 
     internal int MapPos(long pos, long rotations)
