@@ -52,6 +52,7 @@ public class TwoPlayerRoundRobin : TournamentSchedule
     {
         EnsureRoundInRange(roundNumber);
         var rotations = (roundNumber - 1) % NumberOfRounds;
+        // Todo, use long playerId to skip indexing lookup (int32 based)
         var playerIndex = _players.FindIndex(p => p.Id == playerId);
         if (playerIndex == -1)
         {
@@ -63,7 +64,7 @@ public class TwoPlayerRoundRobin : TournamentSchedule
         return new Match
         {
             RoundNumber = roundNumber,
-            Players = [_players[a1], _players[a2]]
+            Players = [_players[a1], _players[a2]] // Todo simplify to avoid indexing and support long
         };
     }
 

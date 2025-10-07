@@ -1,10 +1,11 @@
 ﻿using System.Collections.Concurrent;
 using System.Text.Json;
+using eWorldCup.Core.Interfaces.Repositories;
 using eWorldCup.Core.Models;
 
 namespace eWorldCup.Infrastructure.Repository;
 
-public class PlayerRepository
+public class PlayerRepository : IPlayerRepository
 {
     internal record PlayerSeed(int Id, string Name);
 
@@ -44,7 +45,7 @@ public class PlayerRepository
             Players[player.Id] = player.Name;
         }
     }
-    
+
     public Player Get(int id)
     {
         if (Players.TryGetValue(id, out var name))
@@ -52,5 +53,26 @@ public class PlayerRepository
             return new Player(id, name);
         }
         throw new KeyNotFoundException($"Player with ID {id} not found.");
+    }
+
+    public IEnumerable<Player> GetAll()
+    {
+        return Players.Select(kv => new Player(kv.Key, kv.Value));
+    }
+
+    public void Add(Player player)
+    {
+        if (!Players.TryAdd(player.Id, player.Name))
+        {
+            throw new ArgumentException($"Player with ID {player.Id} already exists.");
+        }
+    }
+
+    public void Remove(int id)
+    {
+        if (!Players.TryRemove(id, out _))
+        {
+            throw new KeyNotFoundException($"Player with ID {id} not found.");
+        }
     }
 }
