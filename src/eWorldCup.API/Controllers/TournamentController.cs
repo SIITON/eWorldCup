@@ -1,4 +1,5 @@
-﻿using eWorldCup.Application.Features.MatchesInASpecificRound;
+﻿using eWorldCup.Application.Features.DirectMatch;
+using eWorldCup.Application.Features.MatchesInASpecificRound;
 using eWorldCup.Application.Features.RemainingMatches;
 using eWorldCup.Core.Models;
 using MediatR;
@@ -11,28 +12,19 @@ namespace eWorldCup.API.Controllers;
 [ApiController]
 public class TournamentController(ISender sender) : ControllerBase
 {
-/*
-Del ett
-En spelturnering ska arrangeras med n deltagare (jämnt antal).
-I varje runda paras deltagarna ihop två och två, och ingen får möta samma motståndare två gånger.
-Efter totalt n−1 rundor har alla hunnit möta alla andra exakt en gång.
-
-Du får en lista med deltagare (se nedan).
-Din uppgift är att, givet antalet deltagare n och en specifik runda d,
-skriva ut vilka par som ska spela i just den rundan.
-
-Specifikation
-Indata:
-En lista med n deltagare (varje deltagare har id och name).
-Ett heltal d (1 ≤ d ≤ n−1).
-n = 6
-d = 2
-
-Möjlig utdata:
-Alice vs Charlie
-Bob vs Fiona
-Diana vs Ethan
-*/
+    // givet antalet deltagare n och en specifik runda d,
+    // skriva ut vilka par som ska spela i just den rundan.
+    // 
+    // Indata:
+    // En lista med n deltagare (varje deltagare har id och name).
+    // Ett heltal d (1 ≤ d ≤ n−1).
+    // n = 6
+    // d = 2
+    // 
+    // Möjlig utdata:
+    // Alice vs Charlie
+    // Bob vs Fiona
+    // Diana vs Ethan
     [HttpPost("rounds/{roundNumber}")]
     public async Task<IActionResult> GetPairsInRound(int roundNumber, [FromBody] IEnumerable<Player> players)
     {
@@ -97,7 +89,14 @@ Diana vs Ethan
     [HttpGet("match")]
     public async Task<IActionResult> GetDirectMatch([FromQuery] long n, [FromQuery] long i, [FromQuery] long d)
     {
-
+        var request = new GetDirectMatchRequest
+        {
+            TotalPlayers = n,
+            PlayerIndex = i,
+            RoundNumber = d
+        };
+        var result = await sender.Send(request);
+        return Ok(result);
     }
 
 }

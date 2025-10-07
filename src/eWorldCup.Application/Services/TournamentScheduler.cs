@@ -10,9 +10,9 @@ public class TournamentScheduler : ITournamentScheduler
         return tournament.GetMatches(roundNumber);
     }
 
-    public static Tournament Create(long numberOfPlayers)
+    public TwoPlayerTournament Create(long numberOfPlayers)
     {
-        var tournament = new Tournament(new TwoPlayerRoundRobin(numberOfPlayers));
+        var tournament = new TwoPlayerTournament(new TwoPlayerRoundRobin(numberOfPlayers));
         return tournament;
     }
     
@@ -21,4 +21,5 @@ public class TournamentScheduler : ITournamentScheduler
 public interface ITournamentScheduler
 {
     IEnumerable<Match> Schedule(IEnumerable<Player> players, long roundNumber);
+    TwoPlayerTournament Create(long numberOfPlayers);
 }
