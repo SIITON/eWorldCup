@@ -8,5 +8,5 @@ public class TournamentMatchApiModel
 
 public class MatchApiModel
 {
-    public IEnumerable<Player> Players { get; set; } = [];
+    public IEnumerable<PlayerApiModel> Players { get; set; } = [];
 }

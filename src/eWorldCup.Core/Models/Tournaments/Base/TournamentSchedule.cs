@@ -14,18 +14,4 @@ public abstract class TournamentSchedule(long numberOfPlayers)
                 $"Round must be in 1..{NumberOfRounds}.");
         }
     }
-
-    internal bool Validate()
-    {
-        ThrowIfUneven(NumberOfPlayers);
-        if (NumberOfPlayers < 2)
-        {
-            throw new ArgumentException("At least two players are required to schedule matches.");
-        }
-        return true;
-    }
-
-    internal static bool ThrowIfUneven(long number) => number % 2 != 0
-        ? throw new ArgumentException("Number of players must be even.")
-        : true;
 }

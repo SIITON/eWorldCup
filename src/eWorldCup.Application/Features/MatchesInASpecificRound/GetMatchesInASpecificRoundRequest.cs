@@ -16,13 +16,19 @@ public class GetMatchesInASpecificRoundHandler(ITournamentScheduler tournament) 
     public async Task<TournamentMatchApiModel> Handle(GetMatchesInASpecificRoundRequest request, CancellationToken cancellationToken)
     {
         var schedule = tournament.Schedule(request.Players, request.RoundNumber);
+        var players = request.Players.ToList();
+
 
         return await Task.FromResult(new TournamentMatchApiModel
         {
             RoundNumber = request.RoundNumber,
             Players = schedule.Select(match => new MatchApiModel
             {
-                Players = match.Players
+                Players = match.PlayerIds.Select(index => new PlayerApiModel
+                {
+                    Id = players[(int)index].Id,
+                    Name = players[(int)index].Name
+                }).ToList()
             })
         });
     }

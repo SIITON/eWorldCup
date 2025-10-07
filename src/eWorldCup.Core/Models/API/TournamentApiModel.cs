@@ -15,9 +15,3 @@ public class TournamentApiModel
     /// </summary>
     public long NumberOfMatchesLeft { get; init; }
 }
-
-public class PlayerApiModel
-{
-    public long Id { get; init; }
-    public string Name { get; init; } = string.Empty;
-}
