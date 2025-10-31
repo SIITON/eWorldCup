@@ -3,7 +3,6 @@ using eWorldCup.Application.Features.MatchesInASpecificRound;
 using eWorldCup.Application.Features.RemainingMatches;
 using eWorldCup.Core.Models;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eWorldCup.API.Controllers;
