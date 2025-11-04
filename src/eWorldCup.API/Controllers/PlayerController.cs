@@ -54,6 +54,13 @@ public class PlayerController(ISender sender) : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetAllPlayers()
+    {
+        var players = await sender.Send(new GetAllPlayersRequest());
+        return Ok(players);
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeletePlayer(int id)
     {
