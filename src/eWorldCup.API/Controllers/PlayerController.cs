@@ -1,4 +1,6 @@
-﻿using eWorldCup.Application.Features.Players;
+﻿using eWorldCup.Application.Features.DirectMatch;
+using eWorldCup.Application.Features.Players;
+using eWorldCup.Application.Features.Schedule;
 using eWorldCup.Core.Models.API;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -14,33 +16,20 @@ public class PlayerController(ISender sender) : ControllerBase
     [HttpGet("{id}/schedule")]
     public async Task<IActionResult> GetPlayerSchedule(int id)
     {
-        // Placeholder implementation
-        var schedule = new
-        {
-            PlayerId = id,
-            Matches = new[]
-            {
-                new { Opponent = "Player 2", Date = "2024-07-01" },
-                new { Opponent = "Player 3", Date = "2024-07-05" }
-            }
-        };
+        var schedule = await sender.Send(new GetPlayerMatchScheduleRequest(id));
         return Ok(schedule);
     }
 
     [HttpGet("{id}/round/{d}")]
     public async Task<IActionResult> GetPlayerMatchesInRound(int id, int d)
     {
-        // Placeholder implementation
-        var matches = new
+        var request = new GetDirectMatchRequest
         {
-            PlayerId = id,
-            Round = d,
-            Matches = new[]
-            {
-                new { Opponent = "Player 4", Date = "2024-07-10" }
-            }
+            PlayerIndex = id - 1,
+            RoundNumber = d
         };
-        return Ok(matches);
+        var result = await sender.Send(request);
+        return Ok(result);
     }
 
     [HttpPost]
@@ -52,6 +41,13 @@ public class PlayerController(ISender sender) : ControllerBase
         };
         var result = await sender.Send(request);
         return Ok(result);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllPlayers()
+    {
+        var players = await sender.Send(new GetAllPlayersRequest());
+        return Ok(players);
     }
 
     [HttpDelete("{id}")]
