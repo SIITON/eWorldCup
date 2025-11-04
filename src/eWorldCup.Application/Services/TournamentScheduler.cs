@@ -12,7 +12,10 @@ public class TournamentScheduler : ITournamentScheduler
 
     public TwoPlayerTournament Create(long numberOfPlayers)
     {
-        var tournament = new TwoPlayerTournament(new TwoPlayerRoundRobin(numberOfPlayers));
+        var tournament = new TwoPlayerTournament(new TwoPlayerRoundRobin(numberOfPlayers))
+        {
+            CurrentRound = 1
+        };
         return tournament;
     }
     
