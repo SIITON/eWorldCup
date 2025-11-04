@@ -2,5 +2,6 @@
 
 public interface IRockPaperArenaService
 {
-    
+    void Statistics();
+    void Start();
 }
