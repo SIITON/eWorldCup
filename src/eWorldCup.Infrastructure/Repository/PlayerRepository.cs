@@ -35,6 +35,7 @@ public class PlayerRepository : IPlayerRepository
                                  """;
 
     internal ConcurrentDictionary<int, string> Players = new();
+    internal int NextId() => Players.Keys.DefaultIfEmpty(0).Max() + 1;
 
     public PlayerRepository()
     {
@@ -60,12 +61,15 @@ public class PlayerRepository : IPlayerRepository
         return Players.Select(kv => new Player(kv.Key, kv.Value));
     }
 
-    public void Add(Player player)
+    public Player Add(Player player)
     {
-        if (!Players.TryAdd(player.Id, player.Name))
+        var id = NextId();
+        if (!Players.TryAdd(id, player.Name))
         {
-            throw new ArgumentException($"Player with ID {player.Id} already exists.");
+            throw new ArgumentException($"Player with ID {id} already exists.");
         }
+
+        return Get(id);
     }
 
     public void Remove(int id)
