@@ -1,4 +1,5 @@
-﻿using eWorldCup.Application.Features.Players;
+﻿using eWorldCup.Application.Features.DirectMatch;
+using eWorldCup.Application.Features.Players;
 using eWorldCup.Application.Features.Schedule;
 using eWorldCup.Core.Models.API;
 using MediatR;
@@ -22,17 +23,13 @@ public class PlayerController(ISender sender) : ControllerBase
     [HttpGet("{id}/round/{d}")]
     public async Task<IActionResult> GetPlayerMatchesInRound(int id, int d)
     {
-        // Placeholder implementation
-        var matches = new
+        var request = new GetDirectMatchRequest
         {
-            PlayerId = id,
-            Round = d,
-            Matches = new[]
-            {
-                new { Opponent = "Player 4", Date = "2024-07-10" }
-            }
+            PlayerIndex = id - 1,
+            RoundNumber = d
         };
-        return Ok(matches);
+        var result = await sender.Send(request);
+        return Ok(result);
     }
 
     [HttpPost]

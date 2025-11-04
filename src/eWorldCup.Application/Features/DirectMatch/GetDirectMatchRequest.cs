@@ -7,7 +7,7 @@ namespace eWorldCup.Application.Features.DirectMatch;
 
 public class GetDirectMatchRequest : IRequest<MatchApiModel>
 {
-    public long TotalPlayers { get; set; }
+    public long TotalPlayers { get; set; } = 0;
     public long PlayerIndex { get; set; }
     public long RoundNumber { get; set; }
 }
@@ -16,7 +16,8 @@ public class GetDirectMatchHandler(ITournamentScheduler tournament, IPlayerRepos
 {
     public async Task<MatchApiModel> Handle(GetDirectMatchRequest request, CancellationToken cancellationToken)
     {
-        var t = tournament.Create(request.TotalPlayers);
+        var totalPlayers = request.TotalPlayers == 0 ? players.GetAll().Count() : request.TotalPlayers;
+        var t = tournament.Create(totalPlayers);
         t.CurrentRound = request.RoundNumber;
         var match = t.Schedule.GetMatch(request.RoundNumber, request.PlayerIndex);
 
