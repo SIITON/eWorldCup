@@ -14,4 +14,8 @@
     <ProjectReference Include="..\eWorldCup.Core\eWorldCup.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Schedule\" />
+  </ItemGroup>
+
 </Project>

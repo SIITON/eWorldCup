@@ -22,7 +22,7 @@ public class GetMatchesInASpecificRoundHandler(ITournamentScheduler tournament) 
         return await Task.FromResult(new TournamentMatchApiModel
         {
             RoundNumber = request.RoundNumber,
-            Players = schedule.Select(match => new MatchApiModel
+            Matches = schedule.Select(match => new MatchApiModel
             {
                 Players = match.PlayerIds.Select(index => new PlayerApiModel
                 {
