@@ -38,7 +38,7 @@ public class TwoPlayerRoundRobin : TournamentSchedule
             yield return new Match
             {
                 RoundNumber = roundNumber,
-                PlayerIds = [a, b]
+                PlayerIds = [a + 1, b + 1]
             };
         }
     }
@@ -46,6 +46,7 @@ public class TwoPlayerRoundRobin : TournamentSchedule
     public IEnumerable<Match> GetMatches(int playerId)
     {
         var n = NumberOfPlayers;
+        var playerIdx = playerId - 1;
         for (var round = 1; round <= NumberOfRounds; round++)
         {
             EnsureRoundInRange(round);
@@ -58,15 +59,14 @@ public class TwoPlayerRoundRobin : TournamentSchedule
                 var a = MapPos(i, rotations);
 
                 var b = MapPos(rightPos, rotations);
-                if (a != playerId || b != playerId)
+                if (a == playerIdx || b == playerIdx)
                 {
-                    continue;
+                    yield return new Match
+                    {
+                        RoundNumber = round,
+                        PlayerIds = [a + 1, b + 1]
+                    };
                 }
-                yield return new Match
-                {
-                    RoundNumber = round,
-                    PlayerIds = [a, b]
-                };
             }
         }
     }
