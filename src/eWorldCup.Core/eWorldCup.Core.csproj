@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <Folder Include="Interfaces\Repositories\" />
+    <Folder Include="Models\API\Requests\" />
+    <Folder Include="Models\API\Responses\" />
     <Folder Include="Models\Tournaments\Base\" />
   </ItemGroup>
 

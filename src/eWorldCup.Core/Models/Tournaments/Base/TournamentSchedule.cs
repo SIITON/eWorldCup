@@ -2,6 +2,7 @@
 
 public abstract class TournamentSchedule(long numberOfPlayers)
 {
+    public Guid Id { get; } = Guid.NewGuid();
     public long NumberOfPlayers = numberOfPlayers;
     public long NumberOfRounds => NumberOfPlayers - 1;
     public long MatchesPerRound => NumberOfPlayers / 2;
