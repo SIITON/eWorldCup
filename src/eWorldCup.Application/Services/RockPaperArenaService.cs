@@ -13,9 +13,8 @@ public class RockPaperArenaService(IPlayerRepository playersRepository, ITournam
 
     public void Start()
     {
-        // get players
         var players = playersRepository.GetAll().ToList();
-        // create tournament
+        // todo tournament factory for different game types
         var tournament = tournamentScheduler.Create(players.Count);
         tournament.CurrentRound = 1;
         // run matches

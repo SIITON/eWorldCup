@@ -66,7 +66,7 @@ public class TwoPlayerRoundRobin : TournamentSchedule
                     yield return new Match
                     {
                         RoundNumber = round,
-                        PlayerIds = [a + 1, b + 1]
+                        PlayerIds = IdxToIds(a, b)
                     };
                 }
             }

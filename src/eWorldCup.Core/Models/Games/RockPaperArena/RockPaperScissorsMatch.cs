@@ -12,8 +12,13 @@ public class RockPaperScissorsMatch(int bestOf = 3)
     
     public void Start()
     {
+        var playerOne = new Hand();
+        var playerTwo = new Hand();
         for (var round = 0; round < bestOf; round++)
         {
+            var userInput = HandShape.Rock; // get from user
+            playerOne.Show(userInput)
+                .Versus(playerTwo.Randomize());
             
         }
     }
