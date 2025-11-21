@@ -23,7 +23,7 @@ public class TwoPlayerRoundRobin : TournamentSchedule
     
     internal static List<long> IdxToIds(long a, long b) => [a + 1, b + 1];
 
-    public IEnumerable<Match> GetMatches(long roundNumber)
+    public IEnumerable<Match> GetMatchesInRound(long roundNumber)
     {
         var n = NumberOfPlayers;
         EnsureRoundInRange(roundNumber);
@@ -45,7 +45,7 @@ public class TwoPlayerRoundRobin : TournamentSchedule
         }
     }
 
-    public IEnumerable<Match> GetMatches(int playerId)
+    public IEnumerable<Match> GetMatchesForPlayer(int playerId)
     {
         var n = NumberOfPlayers;
         var playerIdx = playerId - 1;

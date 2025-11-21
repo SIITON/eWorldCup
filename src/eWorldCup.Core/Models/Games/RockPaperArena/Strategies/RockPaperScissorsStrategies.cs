@@ -4,6 +4,6 @@ public class RockPaperScissorsStrategies
 {
     public Hand AlwaysFist()
     {
-        return new Hand()
+        return new Hand();
     }
 }

@@ -1,10 +1,10 @@
 ﻿using eWorldCup.Core.Interfaces.Repositories;
 using eWorldCup.Core.Interfaces.Services;
-using eWorldCup.Core.Models.Games.RockPaperArena;
 
 namespace eWorldCup.Application.Services;
 
-public class RockPaperArenaService(IPlayerRepository playersRepository, ITournamentScheduler tournamentScheduler) : IRockPaperArenaService
+public class RockPaperArenaService(IPlayerRepository playersRepository, 
+    ITournamentScheduler tournamentScheduler) : IRockPaperArenaService
 {
     public void Statistics()
     {
@@ -20,7 +20,7 @@ public class RockPaperArenaService(IPlayerRepository playersRepository, ITournam
         // run matches
         for (int round = 0; round < tournament.NumberOfRoundsLeft; round++)
         {
-            var matches = tournament.Schedule.GetMatches(tournament.CurrentRound).ToList();
+            var matches = tournament.Schedule.GetMatchesInRound(tournament.CurrentRound).ToList();
             
             tournament.AdvanceRound();
         }
