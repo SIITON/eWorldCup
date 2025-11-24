@@ -2,7 +2,7 @@
 
 namespace eWorldCup.Application.Features.RockPaperArena;
 
-public class GetTournamentStatusRequest : IRequest<bool>
+public class GetTournamentStatusRequest(Guid tournamentId) : IRequest<bool>
 {
-    
+    public Guid TournamentId { get; set; } = tournamentId;
 }

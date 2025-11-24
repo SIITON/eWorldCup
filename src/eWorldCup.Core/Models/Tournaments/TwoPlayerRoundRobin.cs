@@ -40,7 +40,8 @@ public class TwoPlayerRoundRobin : TournamentSchedule
             yield return new Match
             {
                 RoundNumber = roundNumber,
-                PlayerIds = IdxToIds(a, b)
+                PlayerIds = IdxToIds(a, b),
+                PlayerIndex = [a, b]
             };
         }
     }
@@ -66,7 +67,8 @@ public class TwoPlayerRoundRobin : TournamentSchedule
                     yield return new Match
                     {
                         RoundNumber = round,
-                        PlayerIds = IdxToIds(a, b)
+                        PlayerIds = IdxToIds(a, b),
+                        PlayerIndex = [a, b]
                     };
                 }
             }

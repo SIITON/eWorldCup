@@ -3,6 +3,7 @@ using eWorldCup.Application.Features.MatchesInASpecificRound;
 using eWorldCup.Application.Features.RemainingMatches;
 using eWorldCup.Application.Features.RockPaperArena;
 using eWorldCup.Core.Models;
+using eWorldCup.Core.Models.API.Input;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,25 +14,25 @@ namespace eWorldCup.API.Controllers;
 public class TournamentController(ISender sender) : ControllerBase
 {
     [HttpPost("start")]
-    public async Task<IActionResult> StartTournament() // input chosen player name and number of players
+    public async Task<IActionResult> StartTournament([FromBody] StartTournamentCommand command)
     {
-        var request = new StartTournamentCommand();
-        var result = await sender.Send(request);
+        var result = await sender.Send(command);
         return Ok(result);
     }
 
     [HttpGet("{tournamentId}/status")]
     public async Task<IActionResult> GetTournamentStatus([FromRoute] Guid tournamentId)
     {
-        var request = new GetTournamentStatusRequest();
+        var request = new GetTournamentStatusRequest(tournamentId);
         var result = await sender.Send(request);
         return Ok(result);
     }
 
     [HttpPost("{tournamentId}/play")]
-    public async Task<IActionResult> PlayNextRound([FromRoute] Guid tournamentId) // move input
+    public async Task<IActionResult> PlayNextRound([FromRoute] Guid tournamentId, [FromBody] PlayerMoveInput playerMove) // move input
     {
-        var request = new PlayNextRoundRequest();
+        var request = new PlayNextRoundRequest(tournamentId)
+            .ParsePlayerMove(playerMove.ChosenMove);
         var result = await sender.Send(request);
         return Ok(result);
     }

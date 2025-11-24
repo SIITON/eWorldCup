@@ -1,8 +1,56 @@
-﻿using MediatR;
+﻿using eWorldCup.Core.Interfaces.Repositories;
+using eWorldCup.Core.Models.API.Responses;
+using eWorldCup.Core.Models.Games.RockPaperArena;
+using MediatR;
 
 namespace eWorldCup.Application.Features.RockPaperArena;
 
-public class PlayNextRoundRequest : IRequest<bool>
+public class PlayNextRoundRequest(Guid tournamentId) : IRequest<MatchRoundResultsResponse>
 {
-    
+    public Guid TournamentId { get; init; } = tournamentId;
+    public HandShape PlayerMove { get; internal set; }
+
+    public PlayNextRoundRequest ParsePlayerMove(string moveInput)
+    {
+        if (!Enum.TryParse<HandShape>(moveInput, out var hand))
+        {
+            hand = moveInput.ToLowerInvariant() switch
+            {
+                "rock" => HandShape.Rock,
+                "r" => HandShape.Rock,
+                "paper" => HandShape.Paper,
+                "p" => HandShape.Paper,
+                "scissors" => HandShape.Scissors,
+                "s" => HandShape.Scissors,
+                _ => HandShape.Undecided
+            };
+        }
+
+        PlayerMove = hand;
+        return this;
+    }
+}
+
+public class PlayNextRoundHandler(ITournamentRepository tournaments) : IRequestHandler<PlayNextRoundRequest, MatchRoundResultsResponse>
+{
+    public Task<MatchRoundResultsResponse> Handle(PlayNextRoundRequest request, CancellationToken cancellationToken)
+    {
+        // todo get the tournament
+        
+        var playerHand = new Hand().Show(request.PlayerMove);
+        var opponentHand = new Hand().Randomize();
+        var results = playerHand
+            .Versus(opponentHand);
+        
+        // store the results
+        // return the results
+
+        return Task.FromResult(new MatchRoundResultsResponse
+        {
+            PlayerMove = playerHand.Shape.ToString(),
+            OpponentMove = opponentHand.Shape.ToString(),
+            IsDraw = results.IsDraw,
+            IsPlayerWin = results.PlayerOneWins
+        });
+    }
 }
