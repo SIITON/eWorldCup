@@ -1,5 +1,6 @@
 ﻿using eWorldCup.Core.Interfaces.Repositories;
 using eWorldCup.Core.Models;
+using eWorldCup.Core.Models.API;
 using eWorldCup.Core.Models.API.Responses;
 using eWorldCup.Core.Models.Tournaments;
 using MediatR;
@@ -20,13 +21,35 @@ public class StartTournamentHandler(IPlayerRepository playerRepository) : IReque
         var players = playerRepository.GetAll()
             .Take(request.NumberOfPlayers)
             .ToList();
+        var user = playerRepository.Add(new Player(0, request.PlayerName));
         var tournament = new TwoPlayerRoundRobin(players.Count);
         var matches = tournament.GetMatchesInRound(1);
+        var userMatch = tournament.GetMatchesForPlayer(0).First();
+
+        var opponentIndex = (int)userMatch.PlayerIndex.ToArray()[1];
         // Return tournament id and status
         return new TournamentStartedResponse
         {
-            Player = null,
-            NextMatch = null
+            Player = new PlayerApiModel
+            {
+                Id = user.Id,
+                Name = user.Name
+            },
+            NextMatch = new TournamentMatchResponse
+            {
+                CurrentRound = 1,
+                BestOf = 3,
+                Opponent = new PlayerApiModel
+                {
+                    Id = players[opponentIndex].Id,
+                    Name = players[opponentIndex].Name
+                },
+                Score = new MatchScoreApiModel
+                {
+                    Player = 0,
+                    Opponent = 0
+                }
+            }
         };
     }
 }

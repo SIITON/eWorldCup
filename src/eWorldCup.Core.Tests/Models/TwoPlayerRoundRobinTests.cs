@@ -1,4 +1,5 @@
 ﻿using eWorldCup.Core.Models.Tournaments;
+using FluentAssertions;
 
 namespace eWorldCup.Core.Tests.Models;
 
@@ -15,12 +16,17 @@ public class TwoPlayerRoundRobinTests
         // Arrange
         var t = new TwoPlayerRoundRobin(4);
         // Act
-        var numberOfRounds = t.NumberOfRounds;
-
-        var firstRound = t.GetMatchesInRound(1).Select(m => m.PlayerIndex);
-        var secondRound = t.GetMatchesInRound(2).Select(m => m.PlayerIndex);
-        var thirdRound = t.GetMatchesInRound(3).Select(m => m.PlayerIndex);
+        var rounds = new List<int[]>();
+        for (var round = 1; round < t.NumberOfRounds + 1; round++)
+        {
+            var playerIndexesInEachMatchThisRound = t
+                .GetMatchesInRound(round)
+                .Select(m => m.PlayerIndex
+                    .Select(idx => (int)idx)
+                    .ToArray());
+            rounds = rounds.Concat(playerIndexesInEachMatchThisRound).ToList();
+        }
         // Assert
-
+        rounds.Count.Should().Be(rounds.Distinct().Count());
     }
 }
