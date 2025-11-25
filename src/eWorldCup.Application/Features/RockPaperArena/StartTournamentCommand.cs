@@ -2,6 +2,7 @@
 using eWorldCup.Core.Models;
 using eWorldCup.Core.Models.API;
 using eWorldCup.Core.Models.API.Responses;
+using eWorldCup.Core.Models.Games.RockPaperArena;
 using eWorldCup.Core.Models.Tournaments;
 using MediatR;
 
@@ -22,9 +23,9 @@ public class StartTournamentHandler(IPlayerRepository playerRepository) : IReque
             .Take(request.NumberOfPlayers)
             .ToList();
         var user = playerRepository.Add(new Player(0, request.PlayerName));
-        var tournament = new TwoPlayerRoundRobin(players.Count);
-        var matches = tournament.GetMatchesInRound(1);
-        var userMatch = tournament.GetMatchesForPlayer(0).First();
+        var tournament = new RockPaperArenaTournament(players.Count);
+        var matches = tournament.Schedule.GetMatchesInRound(1);
+        var userMatch = tournament.Schedule.GetMatchesForPlayer(0).First();
 
         var opponentIndex = (int)userMatch.PlayerIndex.ToArray()[1];
         // Return tournament id and status

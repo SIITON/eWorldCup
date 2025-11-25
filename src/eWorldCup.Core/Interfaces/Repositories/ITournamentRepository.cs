@@ -1,6 +1,9 @@
-﻿namespace eWorldCup.Core.Interfaces.Repositories;
+﻿using eWorldCup.Core.Models.Games.RockPaperArena;
 
-public interface ITournamentRepository
+namespace eWorldCup.Core.Interfaces.Repositories;
+
+public interface ITournamentRepository 
+    : ICrudRepository<RockPaperArenaTournament, Guid>
 {
     
 }
