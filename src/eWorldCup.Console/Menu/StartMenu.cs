@@ -1,6 +1,6 @@
 ﻿using eWorldCup.ConsoleBackdoor.Models;
+using eWorldCup.ConsoleBackdoor.RockPaperArenaAdapter;
 using eWorldCup.Core.Interfaces.Repositories;
-using eWorldCup.Core.Interfaces.Services;
 
 namespace eWorldCup.ConsoleBackdoor.Menu;
 
@@ -11,7 +11,7 @@ public class StartMenu(IRockPaperArenaService rockPaper, IPlayerRepository playe
         throw new NotImplementedException();
     }
 
-    public bool Run()
+    public async Task<bool> Run()
     {
         var shouldContinue = true;
         while (shouldContinue)
@@ -22,7 +22,7 @@ public class StartMenu(IRockPaperArenaService rockPaper, IPlayerRepository playe
                 new MenuItem(3, "Flying simulator", ShowStatistics)
             );
             menu.Display();
-            shouldContinue = menu.GotoUserSelection();
+            shouldContinue = await menu.GotoUserSelection();
         }
 
         return false;
@@ -30,22 +30,22 @@ public class StartMenu(IRockPaperArenaService rockPaper, IPlayerRepository playe
 
     public bool DoNothing() => true;
 
-    public bool ShowRockPaper()
+    public async Task<bool> ShowRockPaper()
     {
         Console.WriteLine("starting rock paper scissors tournament arena ...");
-        rockPaper.Start();
+        await rockPaper.RunAsync();
         return true;
     }
 
-    public bool ShowPlayers()
+    public async Task<bool> ShowPlayers()
     {
         
         return true;
     }
 
-    public bool ShowStatistics()
+    public async Task<bool> ShowStatistics()
     {
-        rockPaper.Statistics();
+        //rockPaper.Statistics();
 
         return true;
     }
