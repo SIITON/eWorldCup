@@ -25,7 +25,7 @@ public class StartTournamentHandler(IPlayerRepository playerRepository) : IReque
         var user = playerRepository.Add(new Player(0, request.PlayerName));
         var tournament = new RockPaperArenaTournament(players.Count);
         var matches = tournament.Schedule.GetMatchesInRound(1);
-        var userMatch = tournament.Schedule.GetMatchesForPlayer(0).First();
+        var userMatch = tournament.Schedule.GetMatchesForPlayer(1).First();
 
         var opponentIndex = (int)userMatch.PlayerIndex.ToArray()[1];
         // Return tournament id and status

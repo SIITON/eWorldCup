@@ -20,6 +20,9 @@ public class RockPaperArenaConsole(IPlayerRepository playersRepository,
         Console.WriteLine($"Your first match is against {tournament.NextMatch.Opponent.Name}");
         Console.WriteLine($"The match is won in a best of {tournament.NextMatch.BestOf}");
         Console.WriteLine("Good luck \n");
+
+
+        Console.ReadKey();
     }
 
     internal async Task<TournamentStartedResponse> StartTournament()
