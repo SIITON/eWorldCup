@@ -1,6 +1,9 @@
-﻿using eWorldCup.Application.Features.RockPaperArena;
+﻿using System.Text;
+using eWorldCup.Application.Features.RockPaperArena;
 using eWorldCup.Application.Services;
 using eWorldCup.Core.Interfaces.Repositories;
+using eWorldCup.Core.Models.API;
+using eWorldCup.Core.Models.API.Input;
 using eWorldCup.Core.Models.API.Responses;
 using eWorldCup.Infrastructure.ResponseModels;
 using MediatR;
@@ -17,48 +20,61 @@ public class RockPaperArenaConsole(IPlayerRepository playersRepository,
         Console.WriteLine("Please provide the following input");
         var tournament = await StartTournament();
         Console.Clear();
-        Console.WriteLine($"Your first match is against {tournament.NextMatch.Opponent.Name}");
+        var opponent = tournament.NextMatch.Opponent;
+        Console.WriteLine($"Your first match is against {opponent.Name} with the id {opponent.Id}");
         Console.WriteLine($"The match is won in a best of {tournament.NextMatch.BestOf}");
         Console.WriteLine("Good luck \n");
-
-
+        WriteScore(tournament.Player, tournament.NextMatch);
+        for (var turns = 0; turns < tournament.NextMatch.BestOf; turns++)
+        {
+            await PlayTournament(tournament.Id, ConsoleInput.GetPlayerMoveInput());
+        }
+        
+        //
+        Console.WriteLine("\nPress any key to go back");
         Console.ReadKey();
+    }
+
+    internal void WriteScore(PlayerApiModel player, TournamentMatchResponse match)
+    {
+        var sb = new StringBuilder();
+        var titleLeftPaddingLength = sb
+            .Append(player.Name)
+            .Append(" : ")
+            .Append(match.Score.Player)
+            .ToString().Length - 1;
+        var scoreBoard = sb
+            .Append(" - ")
+            .Append(match.Score.Opponent)
+            .Append(" : ")
+            .Append(match.Opponent.Name)
+            .ToString();
+        
+        var line = string.Concat(Enumerable.Repeat("-", scoreBoard.Length));
+        const string title = "SCORE";
+        var titleLeftPadding = string.Concat(Enumerable.Repeat(" ", titleLeftPaddingLength));
+        Console.WriteLine(line);
+        Console.WriteLine($"{titleLeftPadding}{title}");
+        Console.WriteLine(scoreBoard);
+        Console.WriteLine(line);
     }
 
     internal async Task<TournamentStartedResponse> StartTournament()
     {
         var start = new StartTournamentCommand
         {
-            PlayerName = GetPlayerName(),
-            NumberOfPlayers = GetPlayerCount()
+            PlayerName = ConsoleInput.GetPlayerName(),
+            NumberOfPlayers = ConsoleInput.GetPlayerCount()
         };
         
         return await sender.Send(start);
     }
 
-    internal static string GetPlayerName()
+    internal async Task PlayTournament(Guid tournamentId, PlayerMoveInput playerMove)
     {
-        Console.Write("Enter player name: ");
-        var name = Console.ReadLine() ?? "Player";
-        var hellos = new[]{"Hello", "Hi", "hey", "God day", "Oh shit\n It's you", "is that really your name?"};
-        var rnd = new Random(Guid.NewGuid().GetHashCode());
-        Console.WriteLine($"{hellos[rnd.Next(0, hellos.Length)]} {name}");
-        return name;
-    }
-
-    internal static int GetPlayerCount(int tries = 0)
-    {
-        while (true)
-        {
-            Console.Write("Enter number of opponents: ");
-            if (int.TryParse(Console.ReadLine(), out var count) || count >= 1) return count;
-            Console.WriteLine("Enter a valid integer");
-            tries++;
-            if (tries > 3)
-            {
-                return 10;
-            }
-        }
+        var request = new PlayNextRoundRequest(tournamentId)
+            .ParsePlayerMove(playerMove.ChosenMove);
+        var result = await sender.Send(request);
     }
 
     public void Statistics()

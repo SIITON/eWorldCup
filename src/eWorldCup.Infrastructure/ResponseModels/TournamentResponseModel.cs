@@ -6,6 +6,8 @@ public class TournamentResponseModel
     public int CurrentRound { get; init; } = 1;
     public CurrentMatchResponseModel? CurrentMatch { get; set; }
     public bool IsFinished { get; init; } = false;
+    public int NumberOfPlayers { get; set; }
+
     public Dictionary<int, int> PlayerScores = new();
 }
 

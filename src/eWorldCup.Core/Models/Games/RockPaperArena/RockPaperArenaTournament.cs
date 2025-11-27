@@ -7,4 +7,10 @@ public class RockPaperArenaTournament(int numberOfPlayers = 2, Guid? id = null)
 {
     public Guid TournamentId { get; init; } = id ?? Guid.NewGuid();
     public int NumberOfPlayers { get; init; } = numberOfPlayers;
+    // TODO add current match and scores statistics
+}
+
+public class TournamentScores
+{
+    
 }
