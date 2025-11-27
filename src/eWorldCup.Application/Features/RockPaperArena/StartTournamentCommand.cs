@@ -14,16 +14,18 @@ public class StartTournamentCommand : IRequest<TournamentStartedResponse>
     public int NumberOfPlayers { get; init; }
 }
 
-public class StartTournamentHandler(IPlayerRepository playerRepository) : IRequestHandler<StartTournamentCommand, TournamentStartedResponse>
+public class StartTournamentHandler(IPlayerRepository playerRepository, ITournamentRepository tournamentRepository) : IRequestHandler<StartTournamentCommand, TournamentStartedResponse>
 {
     public async Task<TournamentStartedResponse> Handle(StartTournamentCommand request, CancellationToken cancellationToken)
     {
         // Setup tournament with players
-        var players = playerRepository.GetAll()
-            .Take(request.NumberOfPlayers)
-            .ToList();
         var user = playerRepository.Add(new Player(0, request.PlayerName));
+        var players = GetTournamentOpponents(request, user);
         var tournament = new RockPaperArenaTournament(players.Count);
+        tournament.AddUser(user);
+        tournament.AddParticipants(players);
+        tournamentRepository.Add(tournament);
+        // Get the first match
         var matches = tournament.Schedule.GetMatchesInRound(1);
         var userMatch = tournament.Schedule.GetMatchesForPlayer(1).First();
 
@@ -53,4 +55,15 @@ public class StartTournamentHandler(IPlayerRepository playerRepository) : IReque
             }
         };
     }
+
+    public List<Player> GetTournamentOpponents(StartTournamentCommand request, Player user)
+    {
+        var opponents = playerRepository.GetAll()
+            .Where(p => p.Id != user.Id)
+            .Take(request.NumberOfPlayers - 1) // Since the user is one player
+            .ToList();
+        
+        return opponents;
+    }
+
 }

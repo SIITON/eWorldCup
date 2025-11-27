@@ -21,7 +21,7 @@ public static class ConsoleInput
         var tries = 0;
         while (true)
         {
-            Console.Write("Enter number of opponents: ");
+            Console.Write("Enter number of total players: ");
             if (int.TryParse(Console.ReadLine(), out var count) || count >= 1) return count;
             Console.WriteLine("Enter a valid integer");
             tries++;
