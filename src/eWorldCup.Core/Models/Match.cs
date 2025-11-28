@@ -7,7 +7,9 @@ public class Match
     public long RoundNumber { get; set; }
     public IEnumerable<long> PlayerIds { get; set; } = new List<long>();
     public IEnumerable<long> PlayerIndex { get; set; } = new List<long>();
-    
+    public int FirstPlayerIndex() => (int)PlayerIndex.ToList()[0];
+    public int SecondPlayerIndex() => (int)PlayerIndex.ToList()[1];
+
     public MatchScore Score { get; set; } = new();
 
     public void UpdateScore(HandResult results)
@@ -23,19 +25,25 @@ public class Match
         var neededToWin = (bestOf / 2) + 1;
         return Score.Player >= neededToWin || Score.Opponent >= neededToWin;
     }
+    
+    public bool IsDraw(int bestOf)
+    {
+        return !HasAWinner(bestOf) && RoundNumber >= bestOf;
+    }
 
     public int GetWinnerIndex()
     {
         var playerWon = Score.Player > Score.Opponent;
         if (playerWon)
         {
-            return (int)PlayerIndex.ToList()[0];
+            return FirstPlayerIndex();
         }
         var opponentWon = Score.Opponent > Score.Player;
         if (opponentWon)
         {
-            return (int)PlayerIndex.ToList()[1];
+            return SecondPlayerIndex();
         }
+        
     }
 }
 

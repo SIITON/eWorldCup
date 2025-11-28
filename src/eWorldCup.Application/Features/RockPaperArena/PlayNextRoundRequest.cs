@@ -35,16 +35,18 @@ public class PlayNextRoundHandler(ITournamentRepository tournaments) : IRequestH
 {
     public Task<MatchRoundResultsResponse> Handle(PlayNextRoundRequest request, CancellationToken cancellationToken)
     {
-        // todo get the tournament
         var tournament = tournaments.Get(request.TournamentId);
-        var match = tournament.GetUserMatch();
-        // Validate if the match is over, should advance to next game instead of continuing to play
+        var match = tournament.CurrentMatch ?? tournament.GetUserMatch();
+        // TODO Validate if the match is over, should advance to next game instead of continuing to play
         var playerHand = new Hand().Show(request.PlayerMove);
         var opponentHand = new Hand().Randomize();
         var results = playerHand.Versus(opponentHand);
         match.UpdateScore(results);
-        var matchIsOver = match.HasAWinner(tournament.MaximumRoundsInAMatch);
+        var matchIsOver = match.HasAWinner(tournament.Settings.MaximumRoundsInAMatch);
         // store the results
+        
+        tournament.CurrentMatch = match;
+        tournaments.Update(tournament);
         // return the results
 
         return Task.FromResult(new MatchRoundResultsResponse

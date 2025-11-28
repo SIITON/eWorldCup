@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using eWorldCup.Core.Interfaces.Repositories;
+using eWorldCup.Core.Models;
 using eWorldCup.Core.Models.Games.RockPaperArena;
 using eWorldCup.Infrastructure.ResponseModels;
 
@@ -53,20 +54,31 @@ public class TournamentRepository : ITournamentRepository
 
     internal TournamentResponseModel Map(RockPaperArenaTournament value)
     {
-        var currentMatch = value.Schedule.GetMatchesForPlayer(1).ToList()[(int)value.CurrentRound];
+        var currentMatch = value.GetUserMatch();
         return new TournamentResponseModel
         {
             Id = value.TournamentId.ToString(),
             NumberOfPlayers = value.NumberOfPlayers,
-            CurrentRound = 0,
+            CurrentRound = (int)value.CurrentRound,
             CurrentMatch = new CurrentMatchResponseModel
             {
-                Round = 0,
-                PlayerOneScore = 0,
-                PlayerTwoScore = 0
+                Round = (int)currentMatch.RoundNumber,
+                PlayerOne = new MatchParticipantResponseModel
+                {
+                    Id = (int)currentMatch.PlayerIds.ToArray()[0],
+                    Index = currentMatch.FirstPlayerIndex(),
+                    Score = currentMatch.Score.Player,
+                },
+                PlayerTwo = new MatchParticipantResponseModel
+                {
+                    Id = (int)currentMatch.PlayerIds.ToArray()[1],
+                    Index = currentMatch.SecondPlayerIndex(),
+                    Score = currentMatch.Score.Opponent
+                }
+
             },
             IsFinished = false,
-            PlayerScores = null
+            PlayerScores = value.Scores.ScoresByPlayerIndex.ToDictionary(kv => kv.Key, kv => kv.Value),
         };
     }
 
@@ -75,7 +87,23 @@ public class TournamentRepository : ITournamentRepository
         var id = Guid.Parse(value.Id);
         return new RockPaperArenaTournament(value.NumberOfPlayers, id)
         {
-            CurrentRound = value.CurrentRound
+            CurrentRound = value.CurrentRound,
+            Scores = new TournamentScores()
+            {
+                ScoresByPlayerIndex = value.PlayerScores
+            },
+            CurrentMatch = new Match
+            {
+                RoundNumber = value.CurrentMatch.Round,
+                PlayerIds = [value.CurrentMatch.PlayerOne.Id, value.CurrentMatch.PlayerTwo.Id],
+                PlayerIndex = [value.CurrentMatch.PlayerOne.Index, value.CurrentMatch.PlayerTwo.Index],
+                Score = new MatchScore
+                {
+                    Player = value.CurrentMatch.PlayerOne.Score,
+                    Opponent = value.CurrentMatch.PlayerTwo.Score
+                },
+            },
+
         };
     }
 }

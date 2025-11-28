@@ -14,6 +14,13 @@ public class TournamentResponseModel
 public class CurrentMatchResponseModel
 {
     public int Round { get; set; }
-    public int PlayerOneScore { get; init; } = 0;
-    public int PlayerTwoScore { get; init; } = 0;
+    public MatchParticipantResponseModel PlayerOne { get; init; } = new();
+    public MatchParticipantResponseModel PlayerTwo { get; init; } = new();
+}
+
+public class MatchParticipantResponseModel
+{
+    public int Id { get; init; }
+    public int Index { get; init; }
+    public int Score { get; init; }
 }
