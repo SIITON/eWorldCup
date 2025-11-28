@@ -18,7 +18,7 @@ public class GetPlayerMatchScheduleHandler(IPlayerRepository repository, ITourna
         var players = repository.GetAll().ToList();
         var tournament = new TwoPlayerRoundRobin(players.Count);
 
-        var matches = tournament.GetMatches(request.Id);
+        var matches = tournament.GetMatchesForPlayer(request.Id);
 
         return await Task.FromResult(new PlayerScheduleApiModel
         {

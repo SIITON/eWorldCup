@@ -2,7 +2,7 @@
 
 namespace eWorldCup.ConsoleBackdoor.Models;
 
-public record MenuItem(int Id, string Text, Func<bool> OnClick)
+public record MenuItem(int Id, string Text, Func<Task<bool>> OnClick)
 {
     public bool WasClicked(ConsoleKey key)
     {

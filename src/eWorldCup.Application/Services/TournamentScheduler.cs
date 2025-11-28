@@ -7,7 +7,7 @@ public class TournamentScheduler : ITournamentScheduler
     public IEnumerable<Match> Schedule(IEnumerable<Player> players, long roundNumber)
     {
         var tournament = new TwoPlayerRoundRobin(players.Count());
-        return tournament.GetMatches(roundNumber);
+        return tournament.GetMatchesInRound(roundNumber);
     }
 
     public TwoPlayerTournament Create(long numberOfPlayers)

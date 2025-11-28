@@ -7,9 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\Repositories\" />
-    <Folder Include="Models\API\Requests\" />
-    <Folder Include="Models\API\Responses\" />
+    <Folder Include="Interfaces\Services\" />
+    <Folder Include="Models\Games\RockPaperArena\Strategies\" />
     <Folder Include="Models\Tournaments\Base\" />
   </ItemGroup>
 

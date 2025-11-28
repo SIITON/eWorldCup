@@ -54,10 +54,10 @@ public class NumberedMenu
     /// Gets the user selected menu item and executes its on-click function.
     /// </summary>
     /// <returns>true if the user want to continue, otherwise false.</returns>
-    public bool GotoUserSelection()
+    public async Task<bool> GotoUserSelection()
     {
         var selectedMenu = GetUserSelectedChoice();
         System.Console.Clear();
-        return selectedMenu.OnClick.Invoke();
+        return await selectedMenu.OnClick.Invoke();
     }
 }

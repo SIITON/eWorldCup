@@ -1,7 +1,9 @@
 ﻿using eWorldCup.Application.Features.DirectMatch;
 using eWorldCup.Application.Features.MatchesInASpecificRound;
 using eWorldCup.Application.Features.RemainingMatches;
+using eWorldCup.Application.Features.RockPaperArena;
 using eWorldCup.Core.Models;
+using eWorldCup.Core.Models.API.Input;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +13,46 @@ namespace eWorldCup.API.Controllers;
 [ApiController]
 public class TournamentController(ISender sender) : ControllerBase
 {
+    [HttpPost("start")]
+    public async Task<IActionResult> StartTournament([FromBody] StartTournamentCommand command)
+    {
+        var result = await sender.Send(command);
+        return Ok(result);
+    }
+
+    [HttpGet("{tournamentId}/status")]
+    public async Task<IActionResult> GetTournamentStatus([FromRoute] Guid tournamentId)
+    {
+        var request = new GetTournamentStatusRequest(tournamentId);
+        var result = await sender.Send(request);
+        return Ok(result);
+    }
+
+    [HttpPost("{tournamentId}/play")]
+    public async Task<IActionResult> PlayNextRound([FromRoute] Guid tournamentId, [FromBody] PlayerMoveInput playerMove) // move input
+    {
+        var request = new PlayNextRoundRequest(tournamentId)
+            .ParsePlayerMove(playerMove.ChosenMove);
+        var result = await sender.Send(request);
+        return Ok(result);
+    }
+
+    [HttpPost("{tournamentId}/advance")]
+    public async Task<IActionResult> AdvanceRound([FromRoute] Guid tournamentId) // simulate CPU player matches and return result
+    {
+        var request = new GetNextMatchRequest();
+        var result = await sender.Send(request);
+        return Ok(result);
+    }
+
+    [HttpGet("{tournamentId}/final")]
+    public async Task<IActionResult> GetFinalResults([FromRoute] Guid tournamentId)
+    {
+        var request = new GetFinalResultsRequest();
+        var result = await sender.Send(request);
+        return Ok(result);
+    }
+
     // givet antalet deltagare n och en specifik runda d,
     // skriva ut vilka par som ska spela i just den rundan.
     // 
