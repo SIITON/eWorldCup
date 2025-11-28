@@ -27,7 +27,7 @@ public class RockPaperArenaConsole(IPlayerRepository playersRepository,
         WriteScore(tournament.Player, tournament.NextMatch);
         for (var turns = 0; turns < tournament.NextMatch.BestOf; turns++)
         {
-            await PlayTournament(tournament.Id, ConsoleInput.GetPlayerMoveInput());
+            var response = await PlayTournament(tournament.Id, ConsoleInput.GetPlayerMoveInput());
         }
         
         //
@@ -70,11 +70,11 @@ public class RockPaperArenaConsole(IPlayerRepository playersRepository,
         return await sender.Send(start);
     }
 
-    internal async Task PlayTournament(Guid tournamentId, PlayerMoveInput playerMove)
+    internal async Task<MatchRoundResultsResponse> PlayTournament(Guid tournamentId, PlayerMoveInput playerMove)
     {
         var request = new PlayNextRoundRequest(tournamentId)
             .ParsePlayerMove(playerMove.ChosenMove);
-        var result = await sender.Send(request);
+        return await sender.Send(request);
     }
 
     public void Statistics()

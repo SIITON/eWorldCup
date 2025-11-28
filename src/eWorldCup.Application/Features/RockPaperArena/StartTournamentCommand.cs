@@ -21,7 +21,10 @@ public class StartTournamentHandler(IPlayerRepository playerRepository, ITournam
         // Setup tournament with players
         var user = playerRepository.Add(new Player(0, request.PlayerName));
         var players = GetTournamentOpponents(request, user);
-        var tournament = new RockPaperArenaTournament(players.Count);
+        var tournament = new RockPaperArenaTournament(players.Count)
+        {
+            MaximumRoundsInAMatch = 3
+        };
         tournament.AddUser(user);
         tournament.AddParticipants(players);
         tournamentRepository.Add(tournament);
@@ -41,7 +44,7 @@ public class StartTournamentHandler(IPlayerRepository playerRepository, ITournam
             NextMatch = new TournamentMatchResponse
             {
                 CurrentRound = 1,
-                BestOf = 3,
+                BestOf = tournament.MaximumRoundsInAMatch,
                 Opponent = new PlayerApiModel
                 {
                     Id = players[opponentIndex].Id,

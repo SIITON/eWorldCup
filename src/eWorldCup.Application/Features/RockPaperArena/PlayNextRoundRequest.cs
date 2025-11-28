@@ -36,24 +36,27 @@ public class PlayNextRoundHandler(ITournamentRepository tournaments) : IRequestH
     public Task<MatchRoundResultsResponse> Handle(PlayNextRoundRequest request, CancellationToken cancellationToken)
     {
         // todo get the tournament
+        var tournament = tournaments.Get(request.TournamentId);
+        var match = tournament.GetUserMatch();
         // Validate if the match is over, should advance to next game instead of continuing to play
         var playerHand = new Hand().Show(request.PlayerMove);
         var opponentHand = new Hand().Randomize();
         var results = playerHand.Versus(opponentHand);
-        
+        match.UpdateScore(results);
+        var matchIsOver = match.HasAWinner(tournament.MaximumRoundsInAMatch);
         // store the results
         // return the results
 
         return Task.FromResult(new MatchRoundResultsResponse
         {
-            CurrentMatchRound = 0,
+            CurrentMatchRound = (int)match.RoundNumber,
             PlayerMove = playerHand.Shape.ToString(),
             OpponentMove = opponentHand.Shape.ToString(),
             IsDraw = results.IsDraw,
             IsPlayerWin = results.PlayerOneWins,
-            IsMatchOver = false,
-            PlayerScore = 0,
-            OpponentScore = 0
+            IsMatchOver = matchIsOver,
+            PlayerScore = match.Score.Player,
+            OpponentScore = match.Score.Opponent
         });
     }
 }
