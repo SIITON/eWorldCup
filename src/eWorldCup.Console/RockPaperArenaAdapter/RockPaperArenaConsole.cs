@@ -1,18 +1,13 @@
 ﻿using System.Text;
 using eWorldCup.Application.Features.RockPaperArena;
-using eWorldCup.Application.Services;
-using eWorldCup.Core.Interfaces.Repositories;
 using eWorldCup.Core.Models.API;
 using eWorldCup.Core.Models.API.Input;
 using eWorldCup.Core.Models.API.Responses;
-using eWorldCup.Infrastructure.ResponseModels;
 using MediatR;
 
 namespace eWorldCup.ConsoleBackdoor.RockPaperArenaAdapter;
 
-public class RockPaperArenaConsole(IPlayerRepository playersRepository, 
-    ITournamentScheduler tournamentScheduler,
-    ISender sender) : IRockPaperArenaService
+public class RockPaperArenaConsole(ISender sender) : IRockPaperArenaService
 {
     public async Task RunAsync()
     {
@@ -37,10 +32,19 @@ public class RockPaperArenaConsole(IPlayerRepository playersRepository,
                 : "You lost the match! Better luck next time!");
             break;
         }
+
+        await AdvanceTournament(tournament.Id);
         
         //
         Console.WriteLine("\nPress any key to go back");
         Console.ReadKey();
+    }
+
+    private async Task<bool> AdvanceTournament(Guid tournamentId)
+    {
+        var next = new GetNextMatchRequest();
+
+        return await sender.Send(next);
     }
 
     private void WriteMatchRound(MatchRoundResultsResponse response)
@@ -94,59 +98,6 @@ public class RockPaperArenaConsole(IPlayerRepository playersRepository,
         var request = new PlayNextRoundRequest(tournamentId)
             .ParsePlayerMove(playerMove.ChosenMove);
         return await sender.Send(request);
-    }
-
-    public void Statistics()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Start()
-    {
-        var players = playersRepository.GetAll().ToList();
-        // todo tournament factory for different game types
-        var tournament = tournamentScheduler.Create(players.Count);
-        tournament.CurrentRound = 1;
-        // run matches
-        for (int round = 0; round < tournament.NumberOfRoundsLeft; round++)
-        {
-            var matches = tournament.Schedule.GetMatchesInRound(tournament.CurrentRound).ToList();
-            
-            tournament.AdvanceRound();
-        }
-        // display winner
-        // store statistics
-        // return results
-    }
-
-    public void Play()
-    {
-        
-    }
-
-    public void Start(StartTournamentCommand command)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Status(Guid tournamentId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Play(Guid tournamentId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Advance(Guid tournamentId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Final(Guid tournamentId)
-    {
-        throw new NotImplementedException();
     }
 
 }
