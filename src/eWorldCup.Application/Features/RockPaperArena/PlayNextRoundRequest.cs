@@ -44,8 +44,15 @@ public class PlayNextRoundHandler(ITournamentRepository tournaments) : IRequestH
         match.UpdateScore(results);
         var matchIsOver = match.HasAWinner(tournament.Settings.MaximumRoundsInAMatch);
         // store the results
-        
-        tournament.CurrentMatch = match;
+        if (matchIsOver)
+        {
+            tournament.CurrentMatch = null;
+            tournament.AdvanceRound();
+        }
+        else
+        {
+            tournament.CurrentMatch = match;
+        }
         tournaments.Update(tournament);
         // return the results
 

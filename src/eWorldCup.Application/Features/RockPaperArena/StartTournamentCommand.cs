@@ -31,13 +31,14 @@ public class StartTournamentHandler(IPlayerRepository playerRepository, ITournam
         
         tournamentRepository.Add(tournament);
         // Get the first match
-        var matches = tournament.Schedule.GetMatchesInRound(1);
+        //var matches = tournament.Schedule.GetMatchesInRound(1);
         var userMatch = tournament.Schedule.GetMatchesForPlayer(1).First();
-
-        var opponentIndex = (int)userMatch.PlayerIndex.ToArray()[1];
+        
+        var opponent = tournament.Participants[userMatch.SecondPlayerIndex()];
         // Return tournament id and status
         return new TournamentStartedResponse
         {
+            Id = tournament.TournamentId,
             Player = new PlayerApiModel
             {
                 Id = user.Id,
@@ -49,13 +50,13 @@ public class StartTournamentHandler(IPlayerRepository playerRepository, ITournam
                 BestOf = tournament.Settings.MaximumRoundsInAMatch,
                 Opponent = new PlayerApiModel
                 {
-                    Id = players[opponentIndex].Id,
-                    Name = players[opponentIndex].Name
+                    Id = opponent.Id,
+                    Name = opponent.Name
                 },
                 Score = new MatchScoreApiModel
                 {
-                    Player = 0,
-                    Opponent = 0
+                    Player = userMatch.Score.Player,
+                    Opponent = userMatch.Score.Opponent
                 }
             }
         };

@@ -28,11 +28,30 @@ public class RockPaperArenaConsole(IPlayerRepository playersRepository,
         for (var turns = 0; turns < tournament.NextMatch.BestOf; turns++)
         {
             var response = await PlayTournament(tournament.Id, ConsoleInput.GetPlayerMoveInput());
+            WriteMatchRound(response);
+            if (!response.IsMatchOver) continue;
+            
+            Console.WriteLine("\nThe match is over!");
+            Console.WriteLine(response.IsPlayerWin 
+                ? "You won the match! Congratulations!" 
+                : "You lost the match! Better luck next time!");
+            break;
         }
         
         //
         Console.WriteLine("\nPress any key to go back");
         Console.ReadKey();
+    }
+
+    private void WriteMatchRound(MatchRoundResultsResponse response)
+    {
+        Console.WriteLine("\nROUND RESULTS");
+        Console.WriteLine($"You played {response.PlayerMove} \nOpponent played {response.OpponentMove}");
+        Console.WriteLine(response.IsDraw
+            ? "It's a draw!"
+            : response.IsPlayerWin
+                ? "You won this round!"
+                : "You lost this round!");
     }
 
     internal void WriteScore(PlayerApiModel player, TournamentMatchResponse match)

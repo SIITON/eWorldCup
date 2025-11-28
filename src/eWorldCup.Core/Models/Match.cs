@@ -43,7 +43,8 @@ public class Match
         {
             return SecondPlayerIndex();
         }
-        
+
+        return -1;
     }
 }
 

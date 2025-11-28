@@ -1,8 +1,11 @@
-﻿namespace eWorldCup.Infrastructure.ResponseModels;
+﻿using eWorldCup.Core.Models.Games.RockPaperArena;
+
+namespace eWorldCup.Infrastructure.ResponseModels;
 
 public class TournamentResponseModel
 {
     public string Id { get; init; } = Guid.NewGuid().ToString();
+    public RockPaperArenaSettings Settings { get; init; } = new();
     public int CurrentRound { get; init; } = 1;
     public CurrentMatchResponseModel? CurrentMatch { get; set; }
     public bool IsFinished { get; init; } = false;

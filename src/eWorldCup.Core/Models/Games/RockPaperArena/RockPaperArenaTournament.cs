@@ -10,19 +10,23 @@ public class RockPaperArenaTournament(int numberOfPlayers = 2, Guid? id = null)
         IList<Player> opponents,
         Action<RockPaperArenaSettings>? settings = null)
     {
-        var tournament = new RockPaperArenaTournament(opponents.Count + 1);
-        tournament.AddUser(user);
-        tournament.AddParticipants(opponents);
+        var tournament = new RockPaperArenaTournament(user, opponents);
         if (settings == null) return tournament;
         var s = new RockPaperArenaSettings();
         settings(s);
         tournament.Settings = s;
         return tournament;
     }
+
+    private RockPaperArenaTournament(Player user,
+        IList<Player> opponents) : this(opponents.Count + 1)
+    {
+        SetUser(user);
+        SetParticipants(opponents);
+    }
     
     public Guid TournamentId { get; init; } = id ?? Guid.NewGuid();
     public int NumberOfPlayers { get; init; } = numberOfPlayers;
-    public int MaximumRoundsInAMatch { get; init; } = 3;
     public RockPaperArenaSettings Settings { get; internal set; } = new();
 
     public List<Player> Participants { get; internal set; } = [];
@@ -31,15 +35,14 @@ public class RockPaperArenaTournament(int numberOfPlayers = 2, Guid? id = null)
     public TournamentScores Scores { get; set; } = new();
     public Dictionary<Player, int> PlayerIndexes { get; internal set; } = new();
 
-    public void AddUser(Player player)
+    internal void SetUser(Player player)
     {
         Participants.Add(player);
         User = player;
         PlayerIndexes.Add(player, 1);
     }
 
-
-    public void AddParticipants(IEnumerable<Player> players)
+    internal void SetParticipants(IList<Player> players)
     {
         Participants.AddRange(players);
         var idx = 2; // User is always at index 1
@@ -56,9 +59,9 @@ public class RockPaperArenaTournament(int numberOfPlayers = 2, Guid? id = null)
 
     public void RegisterFinishedMatch(Match match)
     {
-        if (match.IsDraw(MaximumRoundsInAMatch))
+        if (match.IsDraw(Settings.MaximumRoundsInAMatch))
         {
-            
+            // TODO
         }
     }
 

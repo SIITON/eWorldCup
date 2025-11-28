@@ -85,9 +85,11 @@ public class TournamentRepository : ITournamentRepository
     internal RockPaperArenaTournament Map(TournamentResponseModel value)
     {
         var id = Guid.Parse(value.Id);
-        return new RockPaperArenaTournament(value.NumberOfPlayers, id)
+        var tournament = new RockPaperArenaTournament(value.NumberOfPlayers, id)
         {
             CurrentRound = value.CurrentRound,
+            Schedule = null,
+            TournamentId = default,
             Scores = new TournamentScores()
             {
                 ScoresByPlayerIndex = value.PlayerScores
@@ -95,8 +97,16 @@ public class TournamentRepository : ITournamentRepository
             CurrentMatch = new Match
             {
                 RoundNumber = value.CurrentMatch.Round,
-                PlayerIds = [value.CurrentMatch.PlayerOne.Id, value.CurrentMatch.PlayerTwo.Id],
-                PlayerIndex = [value.CurrentMatch.PlayerOne.Index, value.CurrentMatch.PlayerTwo.Index],
+                PlayerIds =
+                [
+                    value.CurrentMatch.PlayerOne.Id,
+                    value.CurrentMatch.PlayerTwo.Id
+                ],
+                PlayerIndex =
+                [
+                    value.CurrentMatch.PlayerOne.Index,
+                    value.CurrentMatch.PlayerTwo.Index
+                ],
                 Score = new MatchScore
                 {
                     Player = value.CurrentMatch.PlayerOne.Score,
@@ -105,6 +115,8 @@ public class TournamentRepository : ITournamentRepository
             },
 
         };
+
+        return tournament;
     }
 }
 
