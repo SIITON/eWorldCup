@@ -33,8 +33,7 @@ public class AdvanceToNextRoundHandler(ITournamentRepository tournaments) : IReq
                 var playerTwoHand = new Hand().Randomize();
                 var results = playerOneHand.Versus(playerTwoHand);
                 match.UpdateScore(results);
-                if (match.HasAWinner(bestOf) 
-                    || match.IsDraw(bestOf))
+                if (match.IsOver(bestOf))
                 {
                     break;
                 }
