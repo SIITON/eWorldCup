@@ -4,7 +4,7 @@ namespace eWorldCup.Core.Models;
 
 public class TwoPlayerTournament(TwoPlayerRoundRobin schedule)
 {
-    public long CurrentRound { get; set; }
+    public long CurrentRound { get; set; } = 1;
     public TwoPlayerRoundRobin Schedule { get; init; } = schedule;
 
     /// <summary>

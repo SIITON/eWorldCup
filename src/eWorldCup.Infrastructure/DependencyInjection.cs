@@ -43,6 +43,7 @@ public static class DependencyInjection
                 var repo = new PlayerRepository();
                 repo.Seed(players.Select(p => (p.Id, p.Name)));
                 return repo;
-            });
+            })
+            .AddSingleton<ITournamentRepository, TournamentRepository>();
     }
 }
