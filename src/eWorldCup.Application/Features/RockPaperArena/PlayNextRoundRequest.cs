@@ -1,4 +1,5 @@
 ﻿using eWorldCup.Core.Interfaces.Repositories;
+using eWorldCup.Core.Models.API;
 using eWorldCup.Core.Models.API.Responses;
 using eWorldCup.Core.Models.Games.RockPaperArena;
 using MediatR;
@@ -42,9 +43,10 @@ public class PlayNextRoundHandler(ITournamentRepository tournaments) : IRequestH
             return Task.FromResult(new MatchRoundResultsResponse
             {
                 IsMatchOver = true,
-                CurrentMatchRound = (int)match.RoundNumber,
+                CurrentRound = (int)match.RoundNumber,
+                NumberOfRoundsPlayed = match.NumberOfRoundsPlayed,
                 PlayerScore = match.Score.Player,
-                OpponentScore = match.Score.Opponent
+                OpponentScore = match.Score.Opponent,
             });
         }
         var playerHand = new Hand().Show(request.PlayerMove);
@@ -63,12 +65,21 @@ public class PlayNextRoundHandler(ITournamentRepository tournaments) : IRequestH
 
         return Task.FromResult(new MatchRoundResultsResponse
         {
-            CurrentMatchRound = (int)match.RoundNumber,
+            CurrentRound = (int)match.RoundNumber,
+            NumberOfRoundsPlayed = match.NumberOfRoundsPlayed,
             PlayerMove = playerHand.Shape.ToString(),
             OpponentMove = opponentHand.Shape.ToString(),
             IsDraw = results.IsDraw,
             IsPlayerWin = results.PlayerOneWins,
+            IsOpponentWin = results.PlayerTwoWins,
             IsMatchOver = matchIsOver,
+            WinningPlayer = matchIsOver && match.GetWinnerIndex() > 0
+                ? new PlayerApiModel
+                {
+                    Id = tournament.GetParticipantByIndex(match.GetWinnerIndex()).Id,
+                    Name = tournament.GetParticipantByIndex(match.GetWinnerIndex()).Name
+                }
+                : null,
             PlayerScore = match.Score.Player,
             OpponentScore = match.Score.Opponent
         });

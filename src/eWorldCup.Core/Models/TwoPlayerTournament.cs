@@ -16,13 +16,5 @@ public class TwoPlayerTournament(TwoPlayerRoundRobin schedule)
     /// </summary>
     public long NumberOfMatchesLeft => NumberOfRoundsLeft * Schedule.MatchesPerRound;
     public long NumberOfRoundsPlayed => CurrentRound - 1;
-    
-    public void AdvanceRound()
-    {
-        if (CurrentRound < Schedule.NumberOfRounds)
-        {
-            CurrentRound++;
-        }
-    }
 
 }

@@ -4,6 +4,7 @@ public class TournamentStatusResponse
 {
     public IList<PlayerScoreResponse> Participants { get; set; } = [];
     public long CurrentRound { get; set; }
+    public TournamentMatchResponse CurrentMatch { get; set; } = new();
 }
 
 public class PlayerScoreResponse

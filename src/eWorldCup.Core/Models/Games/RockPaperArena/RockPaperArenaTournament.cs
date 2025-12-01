@@ -11,7 +11,7 @@ public class RockPaperArenaTournament(int numberOfPlayers = 2, Guid? id = null)
         Action<RockPaperArenaSettings>? settings = null, 
         Guid? id = null)
     {
-        var tournament = new RockPaperArenaTournament(user, opponents);
+        var tournament = new RockPaperArenaTournament(user, opponents, id);
         if (settings == null) return tournament;
         var s = new RockPaperArenaSettings();
         settings(s);
@@ -59,6 +59,7 @@ public class RockPaperArenaTournament(int numberOfPlayers = 2, Guid? id = null)
             idx++;
         }
     }
+    public Player GetParticipantByIndex(int index) => Participants[index];
     public Match GetUserMatch() => CurrentMatch ?? Schedule
         .GetMatchesForPlayer(PlayerIndexes[User])
         .ToArray()
@@ -76,13 +77,23 @@ public class RockPaperArenaTournament(int numberOfPlayers = 2, Guid? id = null)
         {
             Scores.ScoresByPlayerIndex[playerOne] += Settings.PointsForDrawingMatch;
             Scores.ScoresByPlayerIndex[playerTwo] += Settings.PointsForDrawingMatch;
+            return;
         }
 
-        if (!match.HasAWinner(Settings.MaximumRoundsInAMatch)) return;
         var winnerIndex = match.GetWinnerIndex();
+        if (winnerIndex < 0) return;
         Scores.ScoresByPlayerIndex[winnerIndex] += Settings.PointsForWinningMatch;
         var loserIndex = winnerIndex == playerOne ? playerTwo : playerOne;
         Scores.ScoresByPlayerIndex[loserIndex] += Settings.PointsForLosingMatch;
+    }
+
+    public void AdvanceRound()
+    {
+        if (CurrentRound < Schedule.NumberOfRounds)
+        {
+            CurrentRound++;
+        }
+        CurrentMatch = null;
     }
 
 }

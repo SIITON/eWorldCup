@@ -8,6 +8,7 @@ COPY src/eWorldCup.API/*.csproj ./eWorldCup.API/
 COPY src/eWorldCup.Core/*.csproj ./eWorldCup.Core/
 COPY src/eWorldCup.Application/*.csproj ./eWorldCup.Application/
 COPY src/eWorldCup.Infrastructure/*.csproj ./eWorldCup.Infrastructure/
+COPY src/eWorldCup.Infrastructure.Tests/*.csproj ./eWorldCup.Infrastructure.Tests/
 COPY src/eWorldCup.Application.Tests/*.csproj ./eWorldCup.Application.Tests/
 COPY src/eWorldCup.Core.Tests/*.csproj ./eWorldCup.Core.Tests/
 COPY src/eWorldCup.Console/*.csproj ./eWorldCup.Console/

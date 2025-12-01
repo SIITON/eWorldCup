@@ -21,6 +21,7 @@ public class CurrentMatchResponseModel
     public int Round { get; set; }
     public MatchParticipantResponseModel PlayerOne { get; init; } = new();
     public MatchParticipantResponseModel PlayerTwo { get; init; } = new();
+    public int NumberOfRoundsPlayed { get; set; }
 }
 
 public class MatchParticipantResponseModel

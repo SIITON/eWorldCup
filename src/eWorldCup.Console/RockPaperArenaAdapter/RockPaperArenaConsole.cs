@@ -25,7 +25,7 @@ public class RockPaperArenaConsole(ISender sender) : IRockPaperArenaService
             await Task.Delay(1000);
             var response = await PlayTournament(tournament.Id, ConsoleInput.GetPlayerMoveInput());
             Console.Clear();
-            Console.WriteLine($"Round #{response.CurrentMatchRound}");
+            Console.WriteLine($"Round #{response.CurrentRound}");
             WriteScore(tournament.Player.Name,
                 response.PlayerScore,
                 tournament.NextMatch.Opponent.Name,

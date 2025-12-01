@@ -1,5 +1,9 @@
-﻿using eWorldCup.Core.Interfaces.Repositories;
+﻿using System.ComponentModel;
+using eWorldCup.Core.Interfaces.Repositories;
+using eWorldCup.Core.Models.API;
 using eWorldCup.Core.Models.API.Responses;
+using eWorldCup.Core.Models.Games.RockPaperArena;
+using eWorldCup.Core.RailwayOriented;
 using MediatR;
 
 namespace eWorldCup.Application.Features.RockPaperArena;
@@ -27,8 +31,30 @@ public class GetTournamentStatusHandler(ITournamentRepository tournaments) : IRe
         var status = new TournamentStatusResponse()
         {
             CurrentRound = tournament.CurrentRound,
-            Participants = participants.ToList()
+            Participants = participants.ToList(),
+            CurrentMatch = CreateMatchResponse(tournament)
         };
         return await Task.FromResult(status);
+    }
+
+    public TournamentMatchResponse CreateMatchResponse(RockPaperArenaTournament tournament)
+    {
+        var match = tournament.GetUserMatch();
+        var opponent = tournament.GetParticipantByIndex(match.SecondPlayerIndex());
+        return new TournamentMatchResponse
+        {
+            PlayedRounds = match.NumberOfRoundsPlayed,
+            BestOf = tournament.Settings.MaximumRoundsInAMatch,
+            Opponent = new PlayerApiModel
+            {
+                Id = opponent.Id,
+                Name = opponent.Name
+            },
+            Score = new MatchScoreApiModel
+            {
+                Player = match.Score.Player,
+                Opponent = match.Score.Opponent
+            }
+        };
     }
 }
