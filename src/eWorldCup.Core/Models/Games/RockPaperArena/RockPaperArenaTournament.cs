@@ -62,10 +62,14 @@ public class RockPaperArenaTournament(int numberOfPlayers = 2, Guid? id = null)
     public Match GetUserMatch() => CurrentMatch ?? Schedule
         .GetMatchesForPlayer(PlayerIndexes[User])
         .ToArray()
-        [(int)CurrentRound];
+        [(int)CurrentRound - 1];
 
     public void RegisterFinishedMatch(Match match)
     {
+        if (!match.IsOver(Settings.MaximumRoundsInAMatch))
+        {
+            return;
+        }
         var playerOne = match.FirstPlayerIndex();
         var playerTwo = match.SecondPlayerIndex();
         if (match.IsDraw(Settings.MaximumRoundsInAMatch))

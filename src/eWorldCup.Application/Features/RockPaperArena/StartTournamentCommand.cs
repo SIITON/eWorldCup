@@ -28,11 +28,11 @@ public class StartTournamentHandler(IPlayerRepository playerRepository, ITournam
             settings.PointsForDrawingMatch = 1;
             settings.PointsForLosingMatch = 0;
         });
+        tournament.CurrentMatch = tournament.GetUserMatch();
         
         tournamentRepository.Add(tournament);
         // Get the first match
-        //var matches = tournament.Schedule.GetMatchesInRound(1);
-        var userMatch = tournament.Schedule.GetMatchesForPlayer(1).First();
+        var userMatch = tournament.GetUserMatch();
         
         var opponent = tournament.Participants[userMatch.SecondPlayerIndex()];
         // Return tournament id and status
