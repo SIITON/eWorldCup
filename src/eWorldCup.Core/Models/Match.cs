@@ -5,6 +5,13 @@ namespace eWorldCup.Core.Models;
 
 public class Match
 {
+    public override string ToString()
+    {
+        var ids = PlayerIds.ToArray();
+        var idxs = PlayerIndex.ToArray();
+        return $"id {ids[0]} vs {ids[1]} | index {idxs[0]} vs {idxs[1]}";
+    }
+
     public long RoundNumber { get; set; }
     public int NumberOfRoundsPlayed { get; set; }
     public IEnumerable<long> PlayerIds { get; set; } = new List<long>();
