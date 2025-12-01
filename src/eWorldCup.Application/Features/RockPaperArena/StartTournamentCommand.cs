@@ -46,7 +46,7 @@ public class StartTournamentHandler(IPlayerRepository playerRepository, ITournam
             },
             NextMatch = new TournamentMatchResponse
             {
-                CurrentRound = 1,
+                PlayedRounds = 0,
                 BestOf = tournament.Settings.MaximumRoundsInAMatch,
                 Opponent = new PlayerApiModel
                 {

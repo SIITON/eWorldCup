@@ -14,7 +14,6 @@ public class Match
 
     public void UpdateScore(HandResult results)
     {
-        if (results.IsDraw) return;
         if (results.PlayerOneWins) Score.Player++;
         else if (results.PlayerTwoWins) Score.Opponent++;
         RoundNumber++;

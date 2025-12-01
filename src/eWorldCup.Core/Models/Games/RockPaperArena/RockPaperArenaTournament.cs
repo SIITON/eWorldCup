@@ -26,6 +26,10 @@ public class RockPaperArenaTournament(int numberOfPlayers = 2, Guid? id = null)
         TournamentId = id ?? Guid.NewGuid();
         SetUser(user);
         SetParticipants(opponents);
+        for (var i = 0; i < Participants.Count; i++)
+        {
+            Scores.ScoresByPlayerIndex[i] = 0;
+        }
     }
     
     public Guid TournamentId { get; init; } = id ?? Guid.NewGuid();
@@ -62,10 +66,19 @@ public class RockPaperArenaTournament(int numberOfPlayers = 2, Guid? id = null)
 
     public void RegisterFinishedMatch(Match match)
     {
+        var playerOne = match.FirstPlayerIndex();
+        var playerTwo = match.SecondPlayerIndex();
         if (match.IsDraw(Settings.MaximumRoundsInAMatch))
         {
-            // TODO
+            Scores.ScoresByPlayerIndex[playerOne] += Settings.PointsForDrawingMatch;
+            Scores.ScoresByPlayerIndex[playerTwo] += Settings.PointsForDrawingMatch;
         }
+
+        if (!match.HasAWinner(Settings.MaximumRoundsInAMatch)) return;
+        var winnerIndex = match.GetWinnerIndex();
+        Scores.ScoresByPlayerIndex[winnerIndex] += Settings.PointsForWinningMatch;
+        var loserIndex = winnerIndex == playerOne ? playerTwo : playerOne;
+        Scores.ScoresByPlayerIndex[loserIndex] += Settings.PointsForLosingMatch;
     }
 
 }

@@ -40,7 +40,7 @@ public class TournamentController(ISender sender) : ControllerBase
     [HttpPost("{tournamentId}/advance")]
     public async Task<IActionResult> AdvanceRound([FromRoute] Guid tournamentId) // simulate CPU player matches and return result
     {
-        var request = new GetNextMatchRequest();
+        var request = new AdvanceToNextRoundRequest(tournamentId);
         var result = await sender.Send(request);
         return Ok(result);
     }
