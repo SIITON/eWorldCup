@@ -43,7 +43,7 @@ public class GetTournamentStatusHandler(ITournamentRepository tournaments) : IRe
         var opponent = tournament.GetParticipantByIndex(match.SecondPlayerIndex());
         return new TournamentMatchResponse
         {
-            PlayedRounds = 0,
+            PlayedRounds = match.NumberOfRoundsPlayed,
             BestOf = tournament.Settings.MaximumRoundsInAMatch,
             Opponent = new PlayerApiModel
             {

@@ -43,7 +43,7 @@ public class AdvanceToNextRoundHandler(ITournamentRepository tournaments) : IReq
             NextMatch = new TournamentMatchResponse()
             {
                 PlayedRounds = 0,
-                BestOf = tournament.Settings.MaximumRoundsInAMatch,
+                BestOf = bestOf,
                 Opponent = new PlayerApiModel
                 {
                     Id = opponent.Id,

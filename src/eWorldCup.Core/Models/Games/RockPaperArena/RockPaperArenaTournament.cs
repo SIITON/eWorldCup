@@ -77,10 +77,11 @@ public class RockPaperArenaTournament(int numberOfPlayers = 2, Guid? id = null)
         {
             Scores.ScoresByPlayerIndex[playerOne] += Settings.PointsForDrawingMatch;
             Scores.ScoresByPlayerIndex[playerTwo] += Settings.PointsForDrawingMatch;
+            return;
         }
 
-        if (!match.HasAWinner(Settings.MaximumRoundsInAMatch)) return;
         var winnerIndex = match.GetWinnerIndex();
+        if (winnerIndex < 0) return;
         Scores.ScoresByPlayerIndex[winnerIndex] += Settings.PointsForWinningMatch;
         var loserIndex = winnerIndex == playerOne ? playerTwo : playerOne;
         Scores.ScoresByPlayerIndex[loserIndex] += Settings.PointsForLosingMatch;
