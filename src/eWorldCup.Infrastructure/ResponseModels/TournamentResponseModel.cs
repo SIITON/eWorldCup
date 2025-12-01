@@ -1,4 +1,5 @@
-﻿using eWorldCup.Core.Models.Games.RockPaperArena;
+﻿using eWorldCup.Core.Models;
+using eWorldCup.Core.Models.Games.RockPaperArena;
 
 namespace eWorldCup.Infrastructure.ResponseModels;
 
@@ -10,6 +11,7 @@ public class TournamentResponseModel
     public CurrentMatchResponseModel? CurrentMatch { get; set; }
     public bool IsFinished { get; init; } = false;
     public int NumberOfPlayers { get; set; }
+    public IEnumerable<Player> Participants { get; set; }
 
     public Dictionary<int, int> PlayerScores = new();
 }

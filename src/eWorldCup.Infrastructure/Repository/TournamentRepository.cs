@@ -85,11 +85,10 @@ public class TournamentRepository : ITournamentRepository
     internal RockPaperArenaTournament Map(TournamentResponseModel value)
     {
         var id = Guid.Parse(value.Id);
+        // TODO Gotta add User, Participants
         var tournament = new RockPaperArenaTournament(value.NumberOfPlayers, id)
         {
             CurrentRound = value.CurrentRound,
-            Schedule = null,
-            TournamentId = default,
             Scores = new TournamentScores()
             {
                 ScoresByPlayerIndex = value.PlayerScores

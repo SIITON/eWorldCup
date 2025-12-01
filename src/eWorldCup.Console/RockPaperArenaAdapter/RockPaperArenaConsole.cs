@@ -23,7 +23,12 @@ public class RockPaperArenaConsole(ISender sender) : IRockPaperArenaService
         for (var turns = 0; turns < tournament.NextMatch.BestOf; turns++)
         {
             var response = await PlayTournament(tournament.Id, ConsoleInput.GetPlayerMoveInput());
+            Console.Clear();
             WriteMatchRound(response);
+            WriteScore(tournament.Player.Name, 
+                response.PlayerScore, 
+                tournament.NextMatch.Opponent.Name, 
+                response.OpponentScore);
             if (!response.IsMatchOver) continue;
             
             Console.WriteLine("\nThe match is over!");
@@ -33,7 +38,7 @@ public class RockPaperArenaConsole(ISender sender) : IRockPaperArenaService
             break;
         }
 
-        await AdvanceTournament(tournament.Id);
+        //await AdvanceTournament(tournament.Id);
         
         //
         Console.WriteLine("\nPress any key to go back");
@@ -58,21 +63,21 @@ public class RockPaperArenaConsole(ISender sender) : IRockPaperArenaService
                 : "You lost this round!");
     }
 
-    internal void WriteScore(PlayerApiModel player, TournamentMatchResponse match)
+    internal static void WriteScore(string playerName, int playerScore, string opponentName, int opponentScore)
     {
         var sb = new StringBuilder();
         var titleLeftPaddingLength = sb
-            .Append(player.Name)
+            .Append(playerName)
             .Append(" : ")
-            .Append(match.Score.Player)
+            .Append(playerScore)
             .ToString().Length - 1;
         var scoreBoard = sb
             .Append(" - ")
-            .Append(match.Score.Opponent)
+            .Append(opponentScore)
             .Append(" : ")
-            .Append(match.Opponent.Name)
+            .Append(opponentName)
             .ToString();
-        
+
         var line = string.Concat(Enumerable.Repeat("-", scoreBoard.Length));
         const string title = "SCORE";
         var titleLeftPadding = string.Concat(Enumerable.Repeat(" ", titleLeftPaddingLength));
@@ -80,6 +85,11 @@ public class RockPaperArenaConsole(ISender sender) : IRockPaperArenaService
         Console.WriteLine($"{titleLeftPadding}{title}");
         Console.WriteLine(scoreBoard);
         Console.WriteLine(line);
+    }
+
+    internal static void WriteScore(PlayerApiModel player, TournamentMatchResponse match)
+    {
+        WriteScore(player.Name, match.Score.Player, match.Opponent.Name, match.Score.Opponent);
     }
 
     internal async Task<TournamentStartedResponse> StartTournament()
