@@ -12,7 +12,7 @@ public class TournamentStartedResponse
 /// </summary>
 public class TournamentMatchResponse
 {
-    public int CurrentRound { get; init; }
+    public int PlayedRounds { get; init; }
     public int BestOf { get; init; } = 3;
     public PlayerApiModel Opponent { get; init; } = new();
     /// <summary>

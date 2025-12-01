@@ -49,7 +49,7 @@ public class RockPaperArenaConsole(ISender sender) : IRockPaperArenaService
 
     private async Task<bool> AdvanceTournament(Guid tournamentId)
     {
-        var next = new GetNextMatchRequest();
+        var next = new AdvanceToNextRoundRequest();
 
         return await sender.Send(next);
     }
