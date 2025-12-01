@@ -1,4 +1,5 @@
-﻿using eWorldCup.Core.Models.Games.RockPaperArena;
+﻿using System.Text.RegularExpressions;
+using eWorldCup.Core.Models.Games.RockPaperArena;
 
 namespace eWorldCup.Core.Models;
 
@@ -47,6 +48,17 @@ public class Match
         }
 
         return -1;
+    }
+
+    public void SimulateRandom(int bestOf)
+    {
+        while (!IsOver(bestOf))
+        {
+            var playerOneHand = new Hand().Randomize();
+            var playerTwoHand = new Hand().Randomize();
+            var results = playerOneHand.Versus(playerTwoHand);
+            UpdateScore(results);
+        }
     }
 }
 

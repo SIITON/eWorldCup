@@ -42,7 +42,8 @@ public class PlayNextRoundHandler(ITournamentRepository tournaments) : IRequestH
             return Task.FromResult(new MatchRoundResultsResponse
             {
                 IsMatchOver = true,
-                CurrentMatchRound = (int)match.RoundNumber,
+                CurrentRound = (int)match.RoundNumber,
+                NumberOfRoundsPlayed = match.NumberOfRoundsPlayed,
                 PlayerScore = match.Score.Player,
                 OpponentScore = match.Score.Opponent
             });
@@ -63,11 +64,13 @@ public class PlayNextRoundHandler(ITournamentRepository tournaments) : IRequestH
 
         return Task.FromResult(new MatchRoundResultsResponse
         {
-            CurrentMatchRound = (int)match.RoundNumber,
+            CurrentRound = (int)match.RoundNumber,
+            NumberOfRoundsPlayed = match.NumberOfRoundsPlayed,
             PlayerMove = playerHand.Shape.ToString(),
             OpponentMove = opponentHand.Shape.ToString(),
             IsDraw = results.IsDraw,
             IsPlayerWin = results.PlayerOneWins,
+            IsOpponentWin = results.PlayerTwoWins,
             IsMatchOver = matchIsOver,
             PlayerScore = match.Score.Player,
             OpponentScore = match.Score.Opponent

@@ -1,4 +1,6 @@
-﻿using eWorldCup.Core.Interfaces.Repositories;
+﻿using System.Text.RegularExpressions;
+using eWorldCup.Core.Interfaces.Repositories;
+using eWorldCup.Core.Models;
 using eWorldCup.Core.Models.Games.RockPaperArena;
 using MediatR;
 
@@ -26,18 +28,7 @@ public class AdvanceToNextRoundHandler(ITournamentRepository tournaments) : IReq
         var bestOf = tournament.Settings.MaximumRoundsInAMatch;
         foreach (var match in matchesToSimulate)
         {
-            
-            for (var matchRound = 0; matchRound < bestOf; matchRound++)
-            {
-                var playerOneHand = new Hand().Randomize();
-                var playerTwoHand = new Hand().Randomize();
-                var results = playerOneHand.Versus(playerTwoHand);
-                match.UpdateScore(results);
-                if (match.IsOver(bestOf))
-                {
-                    break;
-                }
-            }
+            match.SimulateRandom(bestOf);
             tournament.RegisterFinishedMatch(match);
         }
 
@@ -45,4 +36,5 @@ public class AdvanceToNextRoundHandler(ITournamentRepository tournaments) : IReq
         tournaments.Update(tournament);
         return Task.FromResult(true);
     }
+
 }
