@@ -8,14 +8,14 @@ using MediatR;
 
 namespace eWorldCup.Application.Features.RockPaperArena;
 
-public class AdvanceToNextRoundRequest(Guid tournamentId) : IRequest<TournamentMatchResponse>
+public class AdvanceToNextRoundRequest(Guid tournamentId) : IRequest<TournamentAdvancedResponse>
 {
     public Guid TournamentId { get; init; } = tournamentId;
 }
 
-public class AdvanceToNextRoundHandler(ITournamentRepository tournaments) : IRequestHandler<AdvanceToNextRoundRequest, TournamentMatchResponse>
+public class AdvanceToNextRoundHandler(ITournamentRepository tournaments) : IRequestHandler<AdvanceToNextRoundRequest, TournamentAdvancedResponse>
 {
-    public Task<TournamentMatchResponse> Handle(AdvanceToNextRoundRequest request, CancellationToken cancellationToken)
+    public Task<TournamentAdvancedResponse> Handle(AdvanceToNextRoundRequest request, CancellationToken cancellationToken)
     {
         var tournament = tournaments.Get(request.TournamentId);
         
@@ -38,16 +38,19 @@ public class AdvanceToNextRoundHandler(ITournamentRepository tournaments) : IReq
         tournaments.Update(tournament);
         var nextMatch = tournament.GetUserMatch();
         var opponent = tournament.GetParticipantByIndex(nextMatch.SecondPlayerIndex());
-        return Task.FromResult(new TournamentMatchResponse
+        return Task.FromResult(new TournamentAdvancedResponse()
         {
-            PlayedRounds = 0,
-            BestOf = tournament.Settings.MaximumRoundsInAMatch,
-            Opponent = new PlayerApiModel
+            NextMatch = new TournamentMatchResponse()
             {
-                Id = opponent.Id,
-                Name = opponent.Name
-            },
-            Score = new MatchScoreApiModel(),
+                PlayedRounds = 0,
+                BestOf = tournament.Settings.MaximumRoundsInAMatch,
+                Opponent = new PlayerApiModel
+                {
+                    Id = opponent.Id,
+                    Name = opponent.Name
+                },
+                Score = new MatchScoreApiModel(),
+            }
         });
     }
 

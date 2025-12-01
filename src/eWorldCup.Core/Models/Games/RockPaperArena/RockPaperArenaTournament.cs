@@ -59,7 +59,7 @@ public class RockPaperArenaTournament(int numberOfPlayers = 2, Guid? id = null)
             idx++;
         }
     }
-    public Player GetParticipantByIndex(int index) => Participants[index - 1];
+    public Player GetParticipantByIndex(int index) => Participants[index];
     public Match GetUserMatch() => CurrentMatch ?? Schedule
         .GetMatchesForPlayer(PlayerIndexes[User])
         .ToArray()
