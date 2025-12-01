@@ -5,6 +5,7 @@ namespace eWorldCup.Core.Models;
 public class Match
 {
     public long RoundNumber { get; set; }
+    public int NumberOfRoundsPlayed { get; set; }
     public IEnumerable<long> PlayerIds { get; set; } = new List<long>();
     public IEnumerable<long> PlayerIndex { get; set; } = new List<long>();
     public int FirstPlayerIndex() => (int)PlayerIndex.ToList()[0];
@@ -16,6 +17,7 @@ public class Match
     {
         if (results.PlayerOneWins) Score.Player++;
         else if (results.PlayerTwoWins) Score.Opponent++;
+        NumberOfRoundsPlayed++;
     }
     
     public bool IsOver(int bestOf) => HasAWinner(bestOf) || IsDraw(bestOf);
@@ -28,7 +30,7 @@ public class Match
     
     public bool IsDraw(int bestOf)
     {
-        return !HasAWinner(bestOf) && RoundNumber >= bestOf;
+        return !HasAWinner(bestOf) && NumberOfRoundsPlayed >= bestOf;
     }
 
     public int GetWinnerIndex()

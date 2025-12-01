@@ -11,7 +11,7 @@ public class RockPaperArenaTournament(int numberOfPlayers = 2, Guid? id = null)
         Action<RockPaperArenaSettings>? settings = null, 
         Guid? id = null)
     {
-        var tournament = new RockPaperArenaTournament(user, opponents);
+        var tournament = new RockPaperArenaTournament(user, opponents, id);
         if (settings == null) return tournament;
         var s = new RockPaperArenaSettings();
         settings(s);

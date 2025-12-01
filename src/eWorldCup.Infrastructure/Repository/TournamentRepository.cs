@@ -64,6 +64,7 @@ public class TournamentRepository : ITournamentRepository
             CurrentMatch = currentMatch is null ? null : new CurrentMatchResponseModel
             {
                 Round = (int)currentMatch.RoundNumber,
+                NumberOfRoundsPlayed = currentMatch.NumberOfRoundsPlayed,
                 PlayerOne = new MatchParticipantResponseModel
                 {
                     Id = (int)currentMatch.PlayerIds.ToArray()[0],
@@ -105,6 +106,7 @@ public class TournamentRepository : ITournamentRepository
             ? new Match
             {
                 RoundNumber = value.CurrentMatch.Round,
+                NumberOfRoundsPlayed = value.CurrentMatch.NumberOfRoundsPlayed,
                 PlayerIds =
                 [
                     value.CurrentMatch.PlayerOne.Id,
