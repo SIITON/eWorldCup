@@ -122,6 +122,10 @@ public class TournamentRepository : ITournamentRepository
                 },
             }
             : null;
+        tournament.Scores = new TournamentScores
+        {
+            ScoresByPlayerIndex = value.PlayerScores
+        };
 
         return tournament;
     }

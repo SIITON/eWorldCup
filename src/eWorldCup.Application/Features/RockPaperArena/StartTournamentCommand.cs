@@ -28,6 +28,7 @@ public class StartTournamentHandler(IPlayerRepository playerRepository, ITournam
             settings.PointsForDrawingMatch = 1;
             settings.PointsForLosingMatch = 0;
         });
+        tournament.CurrentMatch = tournament.GetUserMatch();
         
         tournamentRepository.Add(tournament);
         // Get the first match
