@@ -8,7 +8,8 @@ public class RockPaperArenaTournament(int numberOfPlayers = 2, Guid? id = null)
     public static RockPaperArenaTournament CreateWithUserAndOpponents(
         Player user,
         IList<Player> opponents,
-        Action<RockPaperArenaSettings>? settings = null)
+        Action<RockPaperArenaSettings>? settings = null, 
+        Guid? id = null)
     {
         var tournament = new RockPaperArenaTournament(user, opponents);
         if (settings == null) return tournament;
@@ -19,8 +20,10 @@ public class RockPaperArenaTournament(int numberOfPlayers = 2, Guid? id = null)
     }
 
     private RockPaperArenaTournament(Player user,
-        IList<Player> opponents) : this(opponents.Count + 1)
+        IList<Player> opponents, 
+        Guid? id = null) : this(opponents.Count + 1)
     {
+        TournamentId = id ?? Guid.NewGuid();
         SetUser(user);
         SetParticipants(opponents);
     }

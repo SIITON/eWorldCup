@@ -58,6 +58,7 @@ public class TournamentRepository : ITournamentRepository
         return new TournamentResponseModel
         {
             Id = value.TournamentId.ToString(),
+            Settings = value.Settings,
             NumberOfPlayers = value.NumberOfPlayers,
             CurrentRound = (int)value.CurrentRound,
             CurrentMatch = new CurrentMatchResponseModel
@@ -79,21 +80,29 @@ public class TournamentRepository : ITournamentRepository
             },
             IsFinished = false,
             PlayerScores = value.Scores.ScoresByPlayerIndex.ToDictionary(kv => kv.Key, kv => kv.Value),
+            Participants = value.Participants
         };
     }
 
     internal RockPaperArenaTournament Map(TournamentResponseModel value)
     {
         var id = Guid.Parse(value.Id);
-        // TODO Gotta add User, Participants
-        var tournament = new RockPaperArenaTournament(value.NumberOfPlayers, id)
-        {
-            CurrentRound = value.CurrentRound,
-            Scores = new TournamentScores()
-            {
-                ScoresByPlayerIndex = value.PlayerScores
-            },
-            CurrentMatch = new Match
+        var participants = value.Participants.ToList();
+        var player = participants[0];
+        var opponents = participants.Skip(1).ToList();
+        var tournament =
+            RockPaperArenaTournament.CreateWithUserAndOpponents(player, opponents,
+                    settings =>
+                    {
+                        settings.MaximumRoundsInAMatch = value.Settings.MaximumRoundsInAMatch;
+                        settings.PointsForWinningMatch = value.Settings.PointsForWinningMatch;
+                        settings.PointsForDrawingMatch = value.Settings.PointsForDrawingMatch;
+                        settings.PointsForLosingMatch = value.Settings.PointsForLosingMatch;
+                    },
+                    id);
+        tournament.CurrentRound = value.CurrentRound;
+        tournament.CurrentMatch = value.CurrentMatch is not null
+            ? new Match
             {
                 RoundNumber = value.CurrentMatch.Round,
                 PlayerIds =
@@ -111,9 +120,8 @@ public class TournamentRepository : ITournamentRepository
                     Player = value.CurrentMatch.PlayerOne.Score,
                     Opponent = value.CurrentMatch.PlayerTwo.Score
                 },
-            },
-
-        };
+            }
+            : null;
 
         return tournament;
     }

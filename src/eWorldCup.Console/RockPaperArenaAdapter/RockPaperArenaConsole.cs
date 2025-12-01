@@ -22,13 +22,15 @@ public class RockPaperArenaConsole(ISender sender) : IRockPaperArenaService
         WriteScore(tournament.Player, tournament.NextMatch);
         for (var turns = 0; turns < tournament.NextMatch.BestOf; turns++)
         {
+            await Task.Delay(1000);
             var response = await PlayTournament(tournament.Id, ConsoleInput.GetPlayerMoveInput());
             Console.Clear();
-            WriteMatchRound(response);
-            WriteScore(tournament.Player.Name, 
-                response.PlayerScore, 
-                tournament.NextMatch.Opponent.Name, 
+            Console.WriteLine($"Round #{response.CurrentMatchRound}");
+            WriteScore(tournament.Player.Name,
+                response.PlayerScore,
+                tournament.NextMatch.Opponent.Name,
                 response.OpponentScore);
+            WriteMatchRound(response);
             if (!response.IsMatchOver) continue;
             
             Console.WriteLine("\nThe match is over!");

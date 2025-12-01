@@ -36,7 +36,7 @@ public class PlayNextRoundHandler(ITournamentRepository tournaments) : IRequestH
     public Task<MatchRoundResultsResponse> Handle(PlayNextRoundRequest request, CancellationToken cancellationToken)
     {
         var tournament = tournaments.Get(request.TournamentId);
-        var match = tournament.CurrentMatch ?? tournament.GetUserMatch();
+        var match = tournament.GetUserMatch();
         // TODO Validate if the match is over, should advance to next game instead of continuing to play
         var playerHand = new Hand().Show(request.PlayerMove);
         var opponentHand = new Hand().Randomize();
