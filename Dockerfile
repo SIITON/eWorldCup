@@ -16,9 +16,9 @@ COPY src/eWorldCup.Console/*.csproj ./eWorldCup.Console/
 RUN dotnet restore
 
 # Copy everything else and build
-COPY . .
+COPY src/ .
 WORKDIR /src/eWorldCup.API
-RUN dotnet publish -c Release -o /app/publish --no-restore
+RUN dotnet publish -c Release -o /app/publish
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
