@@ -4,6 +4,7 @@ using eWorldCup.Application.Features.RemainingMatches;
 using eWorldCup.Application.Features.RockPaperArena;
 using eWorldCup.Core.Models;
 using eWorldCup.Core.Models.API.Input;
+using eWorldCup.Core.Models.API.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +15,7 @@ namespace eWorldCup.API.Controllers;
 public class TournamentController(ISender sender) : ControllerBase
 {
     [HttpPost("start")]
+    [ProducesResponseType<TournamentStartedResponse>(200)]
     public async Task<IActionResult> StartTournament([FromBody] StartTournamentCommand command)
     {
         var result = await sender.Send(command);
@@ -21,6 +23,7 @@ public class TournamentController(ISender sender) : ControllerBase
     }
 
     [HttpGet("{tournamentId}/status")]
+    [ProducesResponseType<TournamentStatusResponse>(200)]
     public async Task<IActionResult> GetTournamentStatus([FromRoute] Guid tournamentId)
     {
         var request = new GetTournamentStatusRequest(tournamentId);
@@ -29,6 +32,7 @@ public class TournamentController(ISender sender) : ControllerBase
     }
 
     [HttpPost("{tournamentId}/play")]
+    [ProducesResponseType<MatchRoundResultsResponse>(200)]
     public async Task<IActionResult> PlayNextRound([FromRoute] Guid tournamentId, [FromBody] PlayerMoveInput playerMove) // move input
     {
         var request = new PlayNextRoundRequest(tournamentId)
@@ -38,6 +42,7 @@ public class TournamentController(ISender sender) : ControllerBase
     }
 
     [HttpPost("{tournamentId}/advance")]
+    [ProducesResponseType<bool>(200)]
     public async Task<IActionResult> AdvanceRound([FromRoute] Guid tournamentId) // simulate CPU player matches and return result
     {
         var request = new AdvanceToNextRoundRequest(tournamentId);
@@ -46,6 +51,7 @@ public class TournamentController(ISender sender) : ControllerBase
     }
 
     [HttpGet("{tournamentId}/final")]
+    [ProducesResponseType<bool>(200)]
     public async Task<IActionResult> GetFinalResults([FromRoute] Guid tournamentId)
     {
         var request = new GetFinalResultsRequest();
