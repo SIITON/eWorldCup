@@ -16,7 +16,6 @@ public class Match
     {
         if (results.PlayerOneWins) Score.Player++;
         else if (results.PlayerTwoWins) Score.Opponent++;
-        RoundNumber++;
     }
     
     public bool IsOver(int bestOf) => HasAWinner(bestOf) || IsDraw(bestOf);

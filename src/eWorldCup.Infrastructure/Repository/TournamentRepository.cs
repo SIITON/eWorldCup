@@ -54,14 +54,14 @@ public class TournamentRepository : ITournamentRepository
 
     internal TournamentResponseModel Map(RockPaperArenaTournament value)
     {
-        var currentMatch = value.GetUserMatch();
+        var currentMatch = value.CurrentMatch;
         return new TournamentResponseModel
         {
             Id = value.TournamentId.ToString(),
             Settings = value.Settings,
             NumberOfPlayers = value.NumberOfPlayers,
             CurrentRound = (int)value.CurrentRound,
-            CurrentMatch = new CurrentMatchResponseModel
+            CurrentMatch = currentMatch is null ? null : new CurrentMatchResponseModel
             {
                 Round = (int)currentMatch.RoundNumber,
                 PlayerOne = new MatchParticipantResponseModel
