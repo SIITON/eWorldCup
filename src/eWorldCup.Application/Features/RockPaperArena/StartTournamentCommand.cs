@@ -34,7 +34,7 @@ public class StartTournamentHandler(IPlayerRepository playerRepository, ITournam
         // Get the first match
         var userMatch = tournament.GetUserMatch();
         
-        var opponent = tournament.Participants[userMatch.SecondPlayerIndex()];
+        var opponent = tournament.GetParticipantByIndex(userMatch.SecondPlayerIndex());
         // Return tournament id and status
         return new TournamentStartedResponse
         {

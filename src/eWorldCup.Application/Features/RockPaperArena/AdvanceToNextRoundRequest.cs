@@ -1,19 +1,21 @@
 ﻿using System.Text.RegularExpressions;
 using eWorldCup.Core.Interfaces.Repositories;
 using eWorldCup.Core.Models;
+using eWorldCup.Core.Models.API;
+using eWorldCup.Core.Models.API.Responses;
 using eWorldCup.Core.Models.Games.RockPaperArena;
 using MediatR;
 
 namespace eWorldCup.Application.Features.RockPaperArena;
 
-public class AdvanceToNextRoundRequest(Guid tournamentId) : IRequest<bool>
+public class AdvanceToNextRoundRequest(Guid tournamentId) : IRequest<TournamentMatchResponse>
 {
     public Guid TournamentId { get; init; } = tournamentId;
 }
 
-public class AdvanceToNextRoundHandler(ITournamentRepository tournaments) : IRequestHandler<AdvanceToNextRoundRequest, bool>
+public class AdvanceToNextRoundHandler(ITournamentRepository tournaments) : IRequestHandler<AdvanceToNextRoundRequest, TournamentMatchResponse>
 {
-    public Task<bool> Handle(AdvanceToNextRoundRequest request, CancellationToken cancellationToken)
+    public Task<TournamentMatchResponse> Handle(AdvanceToNextRoundRequest request, CancellationToken cancellationToken)
     {
         var tournament = tournaments.Get(request.TournamentId);
         
@@ -34,7 +36,19 @@ public class AdvanceToNextRoundHandler(ITournamentRepository tournaments) : IReq
 
         tournament.AdvanceRound();
         tournaments.Update(tournament);
-        return Task.FromResult(true);
+        var nextMatch = tournament.GetUserMatch();
+        var opponent = tournament.GetParticipantByIndex(nextMatch.SecondPlayerIndex());
+        return Task.FromResult(new TournamentMatchResponse
+        {
+            PlayedRounds = 0,
+            BestOf = tournament.Settings.MaximumRoundsInAMatch,
+            Opponent = new PlayerApiModel
+            {
+                Id = opponent.Id,
+                Name = opponent.Name
+            },
+            Score = new MatchScoreApiModel(),
+        });
     }
 
 }
