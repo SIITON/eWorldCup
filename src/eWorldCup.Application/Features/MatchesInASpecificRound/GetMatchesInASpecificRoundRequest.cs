@@ -1,6 +1,6 @@
-﻿using eWorldCup.Application.Services;
-using eWorldCup.Core.Models;
+﻿using eWorldCup.Core.Models;
 using eWorldCup.Core.Models.API;
+using eWorldCup.Core.Models.Tournaments;
 using MediatR;
 
 namespace eWorldCup.Application.Features.MatchesInASpecificRound;
@@ -11,11 +11,12 @@ public class GetMatchesInASpecificRoundRequest : IRequest<TournamentMatchApiMode
     public long RoundNumber { get; set; }
 }
 
-public class GetMatchesInASpecificRoundHandler(ITournamentScheduler tournament) : IRequestHandler<GetMatchesInASpecificRoundRequest, TournamentMatchApiModel>
+public class GetMatchesInASpecificRoundHandler : IRequestHandler<GetMatchesInASpecificRoundRequest, TournamentMatchApiModel>
 {
     public async Task<TournamentMatchApiModel> Handle(GetMatchesInASpecificRoundRequest request, CancellationToken cancellationToken)
     {
-        var schedule = tournament.Schedule(request.Players, request.RoundNumber);
+        var tournament = new TwoPlayerRoundRobin(request.Players.Count());
+        var schedule = tournament.GetMatchesInRound(request.RoundNumber);
         var players = request.Players.ToList();
 
 

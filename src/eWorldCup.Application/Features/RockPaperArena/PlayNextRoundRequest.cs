@@ -1,4 +1,5 @@
-﻿using eWorldCup.Core.Interfaces.Repositories;
+﻿using eWorldCup.Application.Services;
+using eWorldCup.Core.Interfaces.Repositories;
 using eWorldCup.Core.Models.API;
 using eWorldCup.Core.Models.API.Responses;
 using eWorldCup.Core.Models.Games.RockPaperArena;
@@ -32,56 +33,35 @@ public class PlayNextRoundRequest(Guid tournamentId) : IRequest<MatchRoundResult
     }
 }
 
-public class PlayNextRoundHandler(ITournamentRepository tournaments) : IRequestHandler<PlayNextRoundRequest, MatchRoundResultsResponse>
+public class PlayNextRoundHandler(ITournamentRepository tournaments,
+    IRockPaperArenaService rockPaperArena) : IRequestHandler<PlayNextRoundRequest, MatchRoundResultsResponse>
 {
     public Task<MatchRoundResultsResponse> Handle(PlayNextRoundRequest request, CancellationToken cancellationToken)
     {
-        var tournament = tournaments.Get(request.TournamentId);
-        var match = tournament.GetUserMatch();
-        if (match.IsOver(tournament.Settings.MaximumRoundsInAMatch))
-        {
-            return Task.FromResult(new MatchRoundResultsResponse
-            {
-                IsMatchOver = true,
-                CurrentRound = (int)match.RoundNumber,
-                NumberOfRoundsPlayed = match.NumberOfRoundsPlayed,
-                PlayerScore = match.Score.Player,
-                OpponentScore = match.Score.Opponent,
-            });
-        }
-        var playerHand = new Hand().Show(request.PlayerMove);
-        var opponentHand = new Hand().Randomize();
-        var results = playerHand.Versus(opponentHand);
-        match.UpdateScore(results);
-        var matchIsOver = match.IsOver(tournament.Settings.MaximumRoundsInAMatch);
-        // store the results
-        tournament.CurrentMatch = match;
-        if (matchIsOver)
-        {
-            tournament.RegisterFinishedMatch(match);
-        }
-        tournaments.Update(tournament);
-        // return the results
+        var results = rockPaperArena.PlayRound(request.TournamentId, request.PlayerMove);
 
         return Task.FromResult(new MatchRoundResultsResponse
         {
-            CurrentRound = (int)match.RoundNumber,
-            NumberOfRoundsPlayed = match.NumberOfRoundsPlayed,
-            PlayerMove = playerHand.Shape.ToString(),
-            OpponentMove = opponentHand.Shape.ToString(),
-            IsDraw = results.IsDraw,
-            IsPlayerWin = results.PlayerOneWins,
-            IsOpponentWin = results.PlayerTwoWins,
-            IsMatchOver = matchIsOver,
-            WinningPlayer = matchIsOver && match.GetWinnerIndex() > 0
+            CurrentRound = results.CurrentRound,
+            NumberOfRoundsPlayed = results.NumberOfRoundsPlayed,
+            RoundResults = new RoundResultsResponse()
+            {
+                PlayerMove = results.PlayerMove.ToString(),
+                OpponentMove = results.OpponentMove.ToString(),
+                IsDraw = results.IsDraw,
+                IsPlayerWin = results.IsPlayerWin,
+                IsOpponentWin = results.IsOpponentWin,
+            },
+            IsMatchOver = results.IsMatchOver,
+            WinningPlayer = results is { IsMatchOver: true, Winner: not null }
                 ? new PlayerApiModel
                 {
-                    Id = tournament.GetParticipantByIndex(match.GetWinnerIndex()).Id,
-                    Name = tournament.GetParticipantByIndex(match.GetWinnerIndex()).Name
+                    Id = results.Winner.Id,
+                    Name = results.Winner.Name
                 }
                 : null,
-            PlayerScore = match.Score.Player,
-            OpponentScore = match.Score.Opponent
+            PlayerScore = results.Score.Player,
+            OpponentScore = results.Score.Opponent
         });
     }
 }

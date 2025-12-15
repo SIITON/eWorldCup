@@ -1,5 +1,4 @@
-﻿using eWorldCup.Application.Services;
-using eWorldCup.Core.Interfaces.Repositories;
+﻿using eWorldCup.Core.Interfaces.Repositories;
 using eWorldCup.Core.Models.API;
 using eWorldCup.Core.Models.Tournaments;
 using MediatR;
@@ -11,7 +10,7 @@ public class GetPlayerMatchScheduleRequest(int id) : IRequest<PlayerScheduleApiM
     public int Id { get; init; } = id;
 }
 
-public class GetPlayerMatchScheduleHandler(IPlayerRepository repository, ITournamentScheduler tournament) : IRequestHandler<GetPlayerMatchScheduleRequest, PlayerScheduleApiModel>
+public class GetPlayerMatchScheduleHandler(IPlayerRepository repository) : IRequestHandler<GetPlayerMatchScheduleRequest, PlayerScheduleApiModel>
 {
     public async Task<PlayerScheduleApiModel> Handle(GetPlayerMatchScheduleRequest request, CancellationToken cancellationToken)
     {

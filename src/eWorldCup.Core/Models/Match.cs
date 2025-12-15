@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using eWorldCup.Core.Models.Games.RockPaperArena;
+﻿using eWorldCup.Core.Models.Games.RockPaperArena;
 
 namespace eWorldCup.Core.Models;
 
@@ -41,7 +40,7 @@ public class Match
         return !HasAWinner(bestOf) && NumberOfRoundsPlayed >= bestOf;
     }
 
-    public int GetWinnerIndex()
+    public int? GetWinnerIndex()
     {
         var playerWon = Score.Player > Score.Opponent;
         if (playerWon)
@@ -54,7 +53,7 @@ public class Match
             return SecondPlayerIndex();
         }
 
-        return -1;
+        return null;
     }
 
     public void SimulateRandom(int bestOf)
