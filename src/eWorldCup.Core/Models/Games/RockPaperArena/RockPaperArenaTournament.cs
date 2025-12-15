@@ -81,8 +81,8 @@ public class RockPaperArenaTournament(int numberOfPlayers = 2, Guid? id = null)
         }
 
         var winnerIndex = match.GetWinnerIndex();
-        if (winnerIndex < 0) return;
-        Scores.ScoresByPlayerIndex[winnerIndex] += Settings.PointsForWinningMatch;
+        if (!winnerIndex.HasValue) return;
+        Scores.ScoresByPlayerIndex[winnerIndex.Value] += Settings.PointsForWinningMatch;
         var loserIndex = winnerIndex == playerOne ? playerTwo : playerOne;
         Scores.ScoresByPlayerIndex[loserIndex] += Settings.PointsForLosingMatch;
     }

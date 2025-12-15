@@ -2,6 +2,7 @@
 using eWorldCup.Core.Models;
 using eWorldCup.Core.Models.Games.RockPaperArena;
 using eWorldCup.Core.Models.Games.RockPaperArena.Exceptions;
+using MediatR;
 
 namespace eWorldCup.Application.Services;
 
@@ -37,14 +38,21 @@ public class RockPaperArenaService(IPlayerRepository playerRepository,
         var opponentHand = new Hand().Randomize();
         var results = playerHand.Versus(opponentHand);
         match.UpdateScore(results);
-        var matchIsOver = match.IsOver(tournament.Settings.MaximumRoundsInAMatch);
         // store the results
         tournament.CurrentMatch = match;
+
+        var matchIsOver = match.IsOver(tournament.Settings.MaximumRoundsInAMatch);
         Player? winningPlayer = null;
         if (matchIsOver)
         {
             tournament.RegisterFinishedMatch(match);
-            winningPlayer = tournament.GetParticipantByIndex(match.GetWinnerIndex());
+            if (!match.IsDraw(tournament.Settings.MaximumRoundsInAMatch))
+            {
+                var winningPlayerIndex = match.GetWinnerIndex();
+                winningPlayer = winningPlayerIndex is null
+                    ? null
+                    : tournament.GetParticipantByIndex(winningPlayerIndex.Value);
+            }
         }
         tournamentRepository.Update(tournament);
         
@@ -67,6 +75,36 @@ public class RockPaperArenaService(IPlayerRepository playerRepository,
         };
     }
 
+    public RockPaperArenaTournament Advance(Guid tournamentId)
+    {
+        var tournament = tournamentRepository.Get(tournamentId);
+        if (tournament.CurrentMatch != null 
+            && !tournament.CurrentMatch.HasAWinner(tournament.Settings.MaximumRoundsInAMatch))
+        {
+            // There is an ongoing match that is not complete
+            throw new TournamentRoundNotCompleteException();
+        }
+        var matches = tournament.Schedule.GetMatchesInRound(tournament.CurrentRound);
+        var user = tournament.User
+                   ?? throw new NullReferenceException("Missing user in tournament, please start a new tournament");
+        var matchesToSimulate = matches
+            .Where(m => m.FirstPlayerIndex() != tournament.PlayerIndexes[user] &&
+                        m.SecondPlayerIndex() != tournament.PlayerIndexes[user])
+            .ToList();
+
+        var bestOf = tournament.Settings.MaximumRoundsInAMatch;
+        foreach (var match in matchesToSimulate)
+        {
+            match.SimulateRandom(bestOf);
+            tournament.RegisterFinishedMatch(match);
+        }
+
+        tournament.AdvanceRound();
+        tournamentRepository.Update(tournament);
+
+        return tournament;
+    }
+
     internal List<Player> GetTournamentOpponents(int numberOfPlayers, Player user)
     {
         var opponents = playerRepository.GetAll()
@@ -82,4 +120,5 @@ public interface IRockPaperArenaService
 {
     RockPaperArenaTournament Start(string playerName, int numberOfPlayers);
     RoundResults PlayRound(Guid tournamentId, HandShape playerMove);
+    RockPaperArenaTournament Advance(Guid tournamentId);
 }

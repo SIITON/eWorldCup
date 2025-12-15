@@ -1,4 +1,5 @@
-﻿using eWorldCup.Core.Interfaces.Repositories;
+﻿using eWorldCup.Application.Services;
+using eWorldCup.Core.Interfaces.Repositories;
 using eWorldCup.Core.Models.API;
 using eWorldCup.Core.Models.API.Responses;
 using MediatR;
@@ -10,37 +11,20 @@ public class AdvanceToNextRoundRequest(Guid tournamentId) : IRequest<TournamentA
     public Guid TournamentId { get; init; } = tournamentId;
 }
 
-public class AdvanceToNextRoundHandler(ITournamentRepository tournaments) : IRequestHandler<AdvanceToNextRoundRequest, TournamentAdvancedResponse>
+public class AdvanceToNextRoundHandler(IRockPaperArenaService rockPaperArena) : IRequestHandler<AdvanceToNextRoundRequest, TournamentAdvancedResponse>
 {
     public Task<TournamentAdvancedResponse> Handle(AdvanceToNextRoundRequest request, CancellationToken cancellationToken)
     {
-        var tournament = tournaments.Get(request.TournamentId);
-        
-        var matches = tournament.Schedule.GetMatchesInRound(tournament.CurrentRound);
-        var user = tournament.User 
-                   ?? throw new NullReferenceException("Missing user in tournament, please start a new tournament");
-        var matchesToSimulate = matches
-            .Where(m => m.FirstPlayerIndex() != tournament.PlayerIndexes[user] &&
-                        m.SecondPlayerIndex() != tournament.PlayerIndexes[user])
-            .ToList();
-
-        var bestOf = tournament.Settings.MaximumRoundsInAMatch;
-        foreach (var match in matchesToSimulate)
-        {
-            match.SimulateRandom(bestOf);
-            tournament.RegisterFinishedMatch(match);
-        }
-
-        tournament.AdvanceRound();
-        tournaments.Update(tournament);
+        var tournament = rockPaperArena.Advance(request.TournamentId);
         var nextMatch = tournament.GetUserMatch();
         var opponent = tournament.GetParticipantByIndex(nextMatch.SecondPlayerIndex());
+        
         return Task.FromResult(new TournamentAdvancedResponse()
         {
             NextMatch = new TournamentMatchResponse()
             {
                 PlayedRounds = 0,
-                BestOf = bestOf,
+                BestOf = tournament.Settings.MaximumRoundsInAMatch,
                 Opponent = new PlayerApiModel
                 {
                     Id = opponent.Id,
