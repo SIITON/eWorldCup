@@ -1,5 +1,4 @@
-﻿using eWorldCup.Application.Services;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace eWorldCup.Application;
 

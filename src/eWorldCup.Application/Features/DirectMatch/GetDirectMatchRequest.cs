@@ -1,5 +1,4 @@
-﻿using eWorldCup.Application.Services;
-using eWorldCup.Core.Interfaces.Repositories;
+﻿using eWorldCup.Core.Interfaces.Repositories;
 using eWorldCup.Core.Models;
 using eWorldCup.Core.Models.API;
 using eWorldCup.Core.Models.Tournaments;

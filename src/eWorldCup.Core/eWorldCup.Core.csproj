@@ -7,13 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Interfaces\Services\**" />
     <Compile Remove="Models\Games\RockPaperArena\Strategies\**" />
+    <EmbeddedResource Remove="Interfaces\Services\**" />
     <EmbeddedResource Remove="Models\Games\RockPaperArena\Strategies\**" />
+    <None Remove="Interfaces\Services\**" />
     <None Remove="Models\Games\RockPaperArena\Strategies\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\Services\" />
     <Folder Include="Models\Tournaments\Base\" />
   </ItemGroup>
 

@@ -19,6 +19,7 @@ public class RockPaperArenaConsole(ISender sender) : IRockPaperArenaService
         Console.WriteLine($"Your first match is against {opponent.Name} with the id {opponent.Id}");
         Console.WriteLine($"The match is won in a best of {tournament.NextMatch.BestOf}");
         Console.WriteLine("Good luck \n");
+        // ******* Play Match ******
         WriteScore(tournament.Player, tournament.NextMatch);
         for (var turns = 0; turns < tournament.NextMatch.BestOf; turns++)
         {
@@ -39,17 +40,17 @@ public class RockPaperArenaConsole(ISender sender) : IRockPaperArenaService
                 : "You lost the match! Better luck next time!");
             break;
         }
-
-        //await AdvanceTournament(tournament.Id);
+        // ****** Advance Tournament ******
+        var advance = await AdvanceTournament(tournament.Id);
         
         //
         Console.WriteLine("\nPress any key to go back");
         Console.ReadKey();
     }
 
-    private async Task<bool> AdvanceTournament(Guid tournamentId)
+    private async Task<TournamentAdvancedResponse> AdvanceTournament(Guid tournamentId)
     {
-        var next = new AdvanceToNextRoundRequest();
+        var next = new AdvanceToNextRoundRequest(tournamentId);
 
         return await sender.Send(next);
     }

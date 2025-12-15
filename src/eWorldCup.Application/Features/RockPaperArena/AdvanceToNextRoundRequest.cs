@@ -1,9 +1,6 @@
-﻿using System.Text.RegularExpressions;
-using eWorldCup.Core.Interfaces.Repositories;
-using eWorldCup.Core.Models;
+﻿using eWorldCup.Core.Interfaces.Repositories;
 using eWorldCup.Core.Models.API;
 using eWorldCup.Core.Models.API.Responses;
-using eWorldCup.Core.Models.Games.RockPaperArena;
 using MediatR;
 
 namespace eWorldCup.Application.Features.RockPaperArena;
