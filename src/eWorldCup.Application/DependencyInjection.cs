@@ -14,7 +14,6 @@ public static class DependencyInjection
 
     internal static IServiceCollection AddServices(this IServiceCollection services)
     {
-        return services
-            .AddScoped<ITournamentScheduler, TournamentScheduler>();
+        return services;
     }
 }

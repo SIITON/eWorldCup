@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using eWorldCup.Core.Models.Games.RockPaperArena;
+﻿using eWorldCup.Core.Models.Games.RockPaperArena;
 
 namespace eWorldCup.Core.Models;
 

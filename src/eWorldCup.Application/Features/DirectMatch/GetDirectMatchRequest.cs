@@ -1,6 +1,8 @@
 ﻿using eWorldCup.Application.Services;
 using eWorldCup.Core.Interfaces.Repositories;
+using eWorldCup.Core.Models;
 using eWorldCup.Core.Models.API;
+using eWorldCup.Core.Models.Tournaments;
 using MediatR;
 
 namespace eWorldCup.Application.Features.DirectMatch;
@@ -12,14 +14,16 @@ public class GetDirectMatchRequest : IRequest<MatchApiModel>
     public long RoundNumber { get; set; }
 }
 
-public class GetDirectMatchHandler(ITournamentScheduler tournament, IPlayerRepository players) : IRequestHandler<GetDirectMatchRequest, MatchApiModel>
+public class GetDirectMatchHandler(IPlayerRepository players) : IRequestHandler<GetDirectMatchRequest, MatchApiModel>
 {
     public async Task<MatchApiModel> Handle(GetDirectMatchRequest request, CancellationToken cancellationToken)
     {
         var totalPlayers = request.TotalPlayers == 0 ? players.GetAll().Count() : request.TotalPlayers;
-        var t = tournament.Create(totalPlayers);
-        t.CurrentRound = request.RoundNumber;
-        var match = t.Schedule.GetMatch(request.RoundNumber, request.PlayerIndex);
+        var tournament = new TwoPlayerTournament(new TwoPlayerRoundRobin(totalPlayers))
+        {
+            CurrentRound = request.RoundNumber
+        };
+        var match = tournament.Schedule.GetMatch(request.RoundNumber, request.PlayerIndex);
 
         var participants = match.Select(id => players.Get((int)id));
         return await Task.FromResult(new MatchApiModel

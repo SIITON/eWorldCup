@@ -1,18 +1,12 @@
 ﻿using eWorldCup.Application.Services;
 using eWorldCup.Core.Models;
+using eWorldCup.Core.Models.Tournaments;
 using FluentAssertions;
 
 namespace eWorldCup.Application.Tests.Services;
 
 public class RoundRobinSchedulerTests
 {
-    private TournamentScheduler _sut;
-
-    [SetUp]
-    public void Setup()
-    {
-        _sut = new TournamentScheduler();
-    }
 
     [Test]
     public void Should_Return_All_Matches_For_A_Given_Round()
@@ -31,8 +25,9 @@ public class RoundRobinSchedulerTests
             new(9, "Isaac"),
             new(10, "Julia")
         };
+        var tournament = new TwoPlayerRoundRobin(players.Count);
         // Act
-        var matches = _sut.Schedule(players, 9).ToList();
+        var matches = tournament.GetMatchesInRound(9).ToList();
         // Assert
         matches.Should().HaveCount(5);
     }
