@@ -1,4 +1,5 @@
-﻿using eWorldCup.Core.Interfaces.Repositories;
+﻿using eWorldCup.Application.Services;
+using eWorldCup.Core.Interfaces.Repositories;
 using eWorldCup.Core.Models;
 using eWorldCup.Core.Models.API;
 using eWorldCup.Core.Models.API.Responses;
@@ -14,26 +15,18 @@ public class StartTournamentCommand : IRequest<TournamentStartedResponse>
     public int NumberOfPlayers { get; init; }
 }
 
-public class StartTournamentHandler(IPlayerRepository playerRepository, ITournamentRepository tournamentRepository) : IRequestHandler<StartTournamentCommand, TournamentStartedResponse>
+public class StartTournamentHandler(IRockPaperArenaService rockPaperArena) 
+    : IRequestHandler<StartTournamentCommand, TournamentStartedResponse>
 {
     public async Task<TournamentStartedResponse> Handle(StartTournamentCommand request, CancellationToken cancellationToken)
     {
         // Setup tournament with players
-        var user = playerRepository.Add(new Player(0, request.PlayerName));
-        var players = GetTournamentOpponents(request, user);
-        var tournament = RockPaperArenaTournament.CreateWithUserAndOpponents(user, players, settings =>
-        {
-            settings.MaximumRoundsInAMatch = 3;
-            settings.PointsForWinningMatch = 3;
-            settings.PointsForDrawingMatch = 1;
-            settings.PointsForLosingMatch = 0;
-        });
-        tournament.CurrentMatch = tournament.GetUserMatch();
-        
-        tournamentRepository.Add(tournament);
+        var tournament = rockPaperArena.Start(request.PlayerName, request.NumberOfPlayers);
+
         // Get the first match
         var userMatch = tournament.GetUserMatch();
         
+        var user = tournament.User!;
         var opponent = tournament.GetParticipantByIndex(userMatch.SecondPlayerIndex());
         // Return tournament id and status
         return new TournamentStartedResponse
@@ -62,14 +55,5 @@ public class StartTournamentHandler(IPlayerRepository playerRepository, ITournam
         };
     }
 
-    public List<Player> GetTournamentOpponents(StartTournamentCommand request, Player user)
-    {
-        var opponents = playerRepository.GetAll()
-            .Where(p => p.Id != user.Id)
-            .Take(request.NumberOfPlayers - 1) // Since the user is one player
-            .ToList();
-        
-        return opponents;
-    }
 
 }

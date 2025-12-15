@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using eWorldCup.Application.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace eWorldCup.Application;
 
@@ -13,6 +14,7 @@ public static class DependencyInjection
 
     internal static IServiceCollection AddServices(this IServiceCollection services)
     {
-        return services;
+        return services
+            .AddScoped<IRockPaperArenaService, RockPaperArenaService>();
     }
 }
