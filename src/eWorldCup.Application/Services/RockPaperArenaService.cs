@@ -85,11 +85,9 @@ public class RockPaperArenaService(IPlayerRepository playerRepository,
             throw new TournamentRoundNotCompleteException();
         }
         var matches = tournament.Schedule.GetMatchesInRound(tournament.CurrentRound);
-        var user = tournament.User
-                   ?? throw new NullReferenceException("Missing user in tournament, please start a new tournament");
         var matchesToSimulate = matches
-            .Where(m => m.FirstPlayerIndex() != tournament.PlayerIndexes[user] &&
-                        m.SecondPlayerIndex() != tournament.PlayerIndexes[user])
+            .Where(m => m.FirstPlayerIndex() != 0 &&
+                        m.SecondPlayerIndex() != 0)
             .ToList();
 
         var bestOf = tournament.Settings.MaximumRoundsInAMatch;
