@@ -79,7 +79,7 @@ public class RockPaperArenaService(IPlayerRepository playerRepository,
     {
         var tournament = tournamentRepository.Get(tournamentId);
         if (tournament.CurrentMatch != null 
-            && !tournament.CurrentMatch.HasAWinner(tournament.Settings.MaximumRoundsInAMatch))
+            && !tournament.CurrentMatch.IsOver(tournament.Settings.MaximumRoundsInAMatch))
         {
             // There is an ongoing match that is not complete
             throw new TournamentRoundNotCompleteException();

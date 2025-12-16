@@ -8,13 +8,11 @@ namespace eWorldCup.Application.Tests.Features;
 public class GetMatchesInASpecificRoundHandlerTests
 {
     private GetMatchesInASpecificRoundHandler _sut;
-    private TournamentScheduler _tournament;
 
     [SetUp]
     public void Setup()
     {
-        _tournament = new TournamentScheduler();
-        _sut = new GetMatchesInASpecificRoundHandler(_tournament);
+        _sut = new GetMatchesInASpecificRoundHandler();
     }
 
     [Test]
