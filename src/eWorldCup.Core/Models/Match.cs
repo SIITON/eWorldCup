@@ -32,7 +32,14 @@ public class Match
     public bool HasAWinner(int bestOf)
     {
         var neededToWin = (bestOf / 2) + 1;
-        return Score.Player >= neededToWin || Score.Opponent >= neededToWin;
+        if (NumberOfRoundsPlayed < neededToWin)
+        {
+            return false;
+        }
+        return Score.Player >= neededToWin 
+               || Score.Opponent >= neededToWin
+               || (Score.Player > Score.Opponent && NumberOfRoundsPlayed == bestOf)
+               || (Score.Player < Score.Opponent && NumberOfRoundsPlayed == bestOf);
     }
     
     public bool IsDraw(int bestOf)

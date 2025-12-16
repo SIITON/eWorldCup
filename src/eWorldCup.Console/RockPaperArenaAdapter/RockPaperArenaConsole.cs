@@ -35,7 +35,7 @@ public class RockPaperArenaConsole(ISender sender) : IRockPaperArenaService
             if (!response.IsMatchOver) continue;
             
             Console.WriteLine("\nThe match is over!");
-            Console.WriteLine(response.IsPlayerWin 
+            Console.WriteLine(response.RoundResults.IsPlayerWin 
                 ? "You won the match! Congratulations!" 
                 : "You lost the match! Better luck next time!");
             break;
@@ -58,10 +58,10 @@ public class RockPaperArenaConsole(ISender sender) : IRockPaperArenaService
     private void WriteMatchRound(MatchRoundResultsResponse response)
     {
         Console.WriteLine("\nROUND RESULTS");
-        Console.WriteLine($"You played {response.PlayerMove} \nOpponent played {response.OpponentMove}");
-        Console.WriteLine(response.IsDraw
+        Console.WriteLine($"You played {response.RoundResults.PlayerMove} \nOpponent played {response.RoundResults.OpponentMove}");
+        Console.WriteLine(response.RoundResults.IsDraw
             ? "It's a draw!"
-            : response.IsPlayerWin
+            : response.RoundResults.IsPlayerWin
                 ? "You won this round!"
                 : "You lost this round!");
     }
